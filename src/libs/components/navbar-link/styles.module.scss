@@ -1,0 +1,10 @@
+.navLinkDefault{
+
+}
+.navLinkDefault:hover{
+  color:blue !important;
+}
+
+.navLinkActive{
+  color: lighten(red,30%) !important;
+}
