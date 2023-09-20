@@ -1,14 +1,18 @@
 import styles from './styles.module.scss';
-import {PropsWithChildren} from "react";
-import { Layout as AntLayout } from 'antd';
-const { Header:AntHeader } = AntLayout;
+import React from "react";
+import {Layout as AntLayout} from 'antd';
+import {AppLogo} from "~/libs/components/app-logo/app-logo";
+import {Navbar} from "~/libs/components/navbar/navbar";
 
-type Properties = PropsWithChildren<{}>;
+const {Header: AntHeader} = AntLayout;
 
-const Header: React.FC<Properties> = ({children}) => {
+const Header: React.FC = () => {
     return (
-        <AntHeader className={styles.header}>{children}</AntHeader>
+        <AntHeader className={styles.header}>
+            <AppLogo/>
+            <Navbar/>
+        </AntHeader>
     )
 };
 
-export { Header };
+export {Header};

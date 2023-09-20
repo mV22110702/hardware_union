@@ -2,7 +2,7 @@ import {AppRoute} from '~/libs/enums/enums';
 import {RouterProvider} from "../router-provider/router-provider";
 import {Route} from "react-router";
 import {App} from "../app/app";
-import {NotFound} from "~/libs/pages/not-found/not-found";
+import {NotFound} from "~/pages/not-found/not-found";
 
 const Router = (): JSX.Element => (
     <RouterProvider>
