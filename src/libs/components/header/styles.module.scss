@@ -1,10 +1,10 @@
 @import '../../../assets/css/variables.scss';
 
 .header{
-  background-color: white;
+  background-color: #05445E;
+  color:white;
   box-shadow: $shadow-light;
   display: flex;
-  position: sticky;
   align-items: center;
   margin-top: 0;
 }

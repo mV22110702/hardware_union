@@ -5,11 +5,12 @@ type Properties = {
     items: MenuItem[];
     className?: string;
     mode?: MenuMode;
+    handleSelect?: (key:string)=>void
 };
 
-const Menu: React.FC<Properties> = ({items, className, mode}) => {
+const Menu: React.FC<Properties> = ({items, className, mode, handleSelect}) => {
     return (
-        <AntMenu mode={mode} className={className} theme={'light'} items={items}/>
+        <AntMenu onSelect={({key})=>handleSelect?.(key)} mode={mode} className={className} theme={'light'} items={items}/>
     )
 };
 

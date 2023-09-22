@@ -19,4 +19,4 @@ const getMenuItem = (
     } as MenuItem;
 };
 
-export {getMenuItem};
+export {getMenuItem, type MenuItemConstructor};

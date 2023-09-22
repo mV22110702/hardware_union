@@ -1,17 +1,17 @@
+import { getValidClassNames } from '~/libs/helpers/get-valid-class-names.helper';
 import styles from './styles.module.scss';
-import {Layout as AntLayout} from 'antd';
-import {PropsWithChildren} from "react";
+import { Layout } from 'antd';
+import { PropsWithChildren } from 'react';
+const { Content: AntContent } = Layout;
 
-const {Content: AntContent} = AntLayout;
+type Properties = PropsWithChildren<{ className?: string }>;
 
-type Properties = PropsWithChildren<{}>;
-
-const Content: React.FC<Properties> = ({children}: Properties) => {
-    return (
-        <AntLayout className={styles.contentWrapper}>
-            <AntContent className={styles.content}>{children}</AntContent>
-        </AntLayout>
-    )
+const Content = ({ children, className }: Properties) => {
+  return (
+    <AntContent className={getValidClassNames(styles.content, className)}>
+      {children}
+    </AntContent>
+  );
 };
 
-export {Content};
+export { Content };
