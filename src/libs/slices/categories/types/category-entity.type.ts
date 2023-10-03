@@ -1,5 +1,8 @@
+import {CategoryNameValues} from "~/libs/slices/categories/types/category-name-values.type";
+
 type CategoryEntityT = {
-    name: string
+    name: CategoryNameValues,
+    id:number
 };
 
 export { type CategoryEntityT };

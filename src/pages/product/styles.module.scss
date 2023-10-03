@@ -1,0 +1,14 @@
+@import "../../assets/css/variables.scss";
+.pageLayout{
+  padding-inline: 40px;
+}
+.imageContainer{
+  display: flex;
+  justify-content: center;
+}
+.priceContainer {
+  box-shadow: $shadow-light;
+}
+.commentsContainer{
+  margin-top: 12vmin;
+}

@@ -3,12 +3,13 @@ import { ProductEntityWithCategoryT } from '~/libs/slices/products/types/product
 
 let id = 0;
 const productsMock: ProductEntityWithCategoryT[] = Object.values(categoriesMock)
-  .map(({ name: categoryName }) => {
+  .map(({ name: categoryName }, categoryId) => {
     return Object.keys(Array.from({ length: 10 })).map((index) => ({
       id: id++,
       name: `${index}-${categoryName}`,
       price: Number.parseFloat((Math.random() * 1000).toFixed(1)),
       category: {
+        id: categoryId,
         name: categoryName,
       },
     }));

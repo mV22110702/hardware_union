@@ -5,6 +5,8 @@ import { AppRoute } from '~/libs/enums/enums';
 import { getMenuItem } from '~/libs/helpers/helpers';
 import styles from './styles.module.scss';
 import { AuthContext } from '~/libs/components/auth-context-provider/auth-context-provider';
+import {toast} from "react-toastify";
+
 
 const Navbar: React.FC = () => {
   const authContext = useContext(AuthContext);
