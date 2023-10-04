@@ -1,5 +1,4 @@
 import { createContext, PropsWithChildren, useState } from 'react';
-import {Outlet} from "react-router-dom";
 
 const AuthContext = createContext<{
   auth: boolean;

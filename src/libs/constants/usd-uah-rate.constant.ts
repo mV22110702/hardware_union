@@ -1,0 +1,4 @@
+const USD_TO_UAH_RATE = 36.67;
+const UAH_TO_USD_RATE = 0.027;
+
+export { USD_TO_UAH_RATE, UAH_TO_USD_RATE };

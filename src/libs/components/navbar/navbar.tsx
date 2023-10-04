@@ -5,8 +5,7 @@ import { AppRoute } from '~/libs/enums/enums';
 import { getMenuItem } from '~/libs/helpers/helpers';
 import styles from './styles.module.scss';
 import { AuthContext } from '~/libs/components/auth-context-provider/auth-context-provider';
-import {toast} from "react-toastify";
-
+import { CurrencyNavbarDropdown } from '~/libs/components/currency-navbar-dropdown/currency-navbar-dropdown';
 
 const Navbar: React.FC = () => {
   const authContext = useContext(AuthContext);
@@ -15,12 +14,20 @@ const Navbar: React.FC = () => {
     { to: AppRoute.ROOT, name: 'Home' },
     { to: AppRoute.ROOT, name: authContext?.auth ? 'Sign out' : 'Sign in' },
   ];
-  const menuItems = links.map(({ to, name }) =>
+
+  const menuItems = [
+    ...links.map(({ to, name }) =>
+      getMenuItem({
+        label: <NavbarLink to={to} name={name} />,
+        key: name,
+      }),
+    ),
     getMenuItem({
-      label: <NavbarLink to={to} name={name} />,
-      key: name,
+      label: <CurrencyNavbarDropdown />,
+      key: 'currency',
+      style: { marginLeft: 'auto' },
     }),
-  );
+  ];
 
   return (
     <div className={styles.navbarMenuContainer}>

@@ -1,9 +1,9 @@
-import {Dispatch, SetStateAction, useState} from 'react';
-import { CheckedProduct } from '~/pages/products/libs/types/checked-product.type';
+import {Dispatch, SetStateAction} from 'react';
+import { ChosenProduct } from '~/pages/products/libs/types/checked-product.type';
 
 const handleChooseProductCard =
-  (setState: Dispatch<SetStateAction<CheckedProduct[]>>) =>
-  ({ id, isChecked }: CheckedProduct & { isChecked: boolean }) => {
+  (setState: Dispatch<SetStateAction<ChosenProduct[]>>) =>
+  ({ id, isChecked }: ChosenProduct & { isChecked: boolean }) => {
     setState((checkedProducts) => {
       if (!checkedProducts) {
         return checkedProducts;

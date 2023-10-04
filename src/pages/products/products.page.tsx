@@ -1,4 +1,4 @@
-import { Badge, Col, Row, Tag } from 'antd';
+import { Col, Pagination, Row, Tag } from 'antd';
 import styles from './styles.module.scss';
 import { Sider } from '~/libs/components/sider/sider';
 import { MenuItem } from '~/libs/types/menu-item.type';
@@ -8,20 +8,36 @@ import { productsMock } from '~/libs/slices/products/mocks/products.mock';
 import { ProductCard } from '~/libs/components/product-card/product-card';
 import { Layout } from '~/libs/components/layout/layout';
 import { Content } from '../../libs/components/content/content';
-import { CheckedProduct } from '~/pages/products/libs/types/checked-product.type';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import {
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { handleChooseProductCard } from '~/libs/components/product-card/libs/helpers/handle-choose-product-card.helper';
 import { useSearchParams } from 'react-router-dom';
 import { UrlParamsFilter } from '~/pages/products/libs/enums/url-params-filter.helper';
 import { CategoryName } from '~/libs/slices/categories/enum/category-name.enum';
 import { toast } from 'react-toastify';
 import { CategoryNameValues } from '~/libs/slices/categories/types/category-name-values.type';
+import { ChosenProductsContext } from '~/libs/components/chosen-products-provider/chosen-products-provider';
+import {ChosenCurrencyContext} from "~/libs/components/chosen-currency-provider/chosen-currency-provider.tsx";
+
+const initialPagination = { page: 0, size: 10 };
 
 const ProductsPage: React.FC = () => {
+  useContext(ChosenCurrencyContext)!;
   const categoryErrorToastId = useRef<number | string | null>(null);
-  const [checkedProducts, setCheckedProducts] = useState<CheckedProduct[]>([]);
-  const areAnyCheckedProducts = checkedProducts.length !== 0;
+  const chosenProductsContext = useContext(ChosenProductsContext);
+  const areAnyCheckedProducts =
+    chosenProductsContext!.chosenProducts.length !== 0;
   const [searchParams, setSearchParams] = useSearchParams();
+  const [pagination, setPagination] = useState<{
+    page: number;
+    size: number;
+  }>(initialPagination);
 
   const categorySidebarItems: MenuItem[] = useMemo(
     () =>
@@ -48,19 +64,24 @@ const ProductsPage: React.FC = () => {
         return searchParams;
       });
     }
+    setPagination(initialPagination);
   }, [categoryFilter]);
 
   const filteredProductsMock = categoryFilter
     ? productsMock.filter((product) => product.category.name === categoryFilter)
     : productsMock;
 
-  const handleCheck = useCallback(handleChooseProductCard(setCheckedProducts), [
-    handleChooseProductCard,
-    setCheckedProducts,
-  ]);
+  const paginatedProductsMock = filteredProductsMock.slice(
+    pagination.page * pagination.size,
+    pagination.page * pagination.size + pagination.size,
+  );
+  const handleCheck = useCallback(
+    handleChooseProductCard(chosenProductsContext!.setChosenProducts),
+    [handleChooseProductCard, chosenProductsContext!.setChosenProducts],
+  );
 
-  const productCards = filteredProductsMock.map((product) => {
-    const isChecked = !!checkedProducts.find(
+  const productCards = paginatedProductsMock.map((product) => {
+    const isChecked = !!chosenProductsContext!.chosenProducts.find(
       (checkedProduct) => checkedProduct.id === product.id,
     );
     return (
@@ -86,6 +107,10 @@ const ProductsPage: React.FC = () => {
     [setSearchParams],
   );
 
+  const handlePagination = useCallback((page: number, size: number) => {
+    setPagination({ page, size });
+  }, []);
+
   return (
     <Layout hasSider>
       <Sider handleSelect={handleSelect} items={categorySidebarItems} />
@@ -96,13 +121,21 @@ const ProductsPage: React.FC = () => {
               style={{ margin: 30, padding: 10, fontSize: 15 }}
               color="geekblue"
               closable
-              onClose={() => setCheckedProducts([])}
+              onClose={() => chosenProductsContext!.setChosenProducts([])}
             >
-              {checkedProducts.length} Chosen
+              {chosenProductsContext!.chosenProducts.length} Chosen
             </Tag>
           )}
           <Row style={{ marginRight: 0 }} justify="start" gutter={[20, 40]}>
             {productCards}
+          </Row>
+          <Row>
+            <Pagination
+              showSizeChanger
+              onChange={handlePagination}
+              pageSize={pagination.size}
+              total={filteredProductsMock.length - pagination.size}
+            />
           </Row>
         </Content>
       </Layout>

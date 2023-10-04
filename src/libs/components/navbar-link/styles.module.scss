@@ -1,10 +1,7 @@
 .navLinkDefault{
-
+  user-select: none;
+  color: #75E6DA !important;
 }
 .navLinkDefault:hover{
   color:white !important;
-}
-
-.navLinkActive{
-  color: #75E6DA !important;
 }

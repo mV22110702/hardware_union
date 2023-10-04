@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/hardware_union.iml" filepath="$PROJECT_DIR$/.idea/hardware_union.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/hardware_union_vit2e.iml" filepath="$PROJECT_DIR$/.idea/hardware_union_vit2e.iml" />
     </modules>
   </component>
 </project>

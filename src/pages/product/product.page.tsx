@@ -3,13 +3,11 @@ import { ProductEntityWithCategoryT } from '~/libs/slices/products/types/product
 import {
   Avatar,
   Breadcrumb,
-  Button,
+  Card,
+  Checkbox,
   Col,
-  Form,
   Image,
-  Input,
   List,
-  message,
   Row,
   Typography,
 } from 'antd';
@@ -21,29 +19,31 @@ import Title from 'antd/es/typography/Title';
 import {
   ChangeEventHandler,
   useCallback,
+  useContext,
   useMemo,
-  useRef,
   useState,
 } from 'react';
 import {
-  getBreadcrumbItem,
-  getRandomAvatarSource,
+    exchangeCurrency,
+    getBreadcrumbItem,
+    getRandomAvatarSource,
 } from '~/libs/helpers/helpers';
 import { NavLink } from 'react-router-dom';
 import { CommentEntityT } from '~/libs/slices/comments/types/comment-entity.type';
-import { useForm } from 'antd/es/form/Form';
 import { toast } from 'react-toastify';
+import { handleChooseProductCard } from '~/libs/components/product-card/libs/helpers/handle-choose-product-card.helper';
+import { ChosenProductsContext } from '~/libs/components/chosen-products-provider/chosen-products-provider';
+import { ChosenCurrencyContext } from '~/libs/components/chosen-currency-provider/chosen-currency-provider.tsx';
+import {CommentForm, CommentFormData} from '~/libs/components/comment-form/comment-form.tsx';
+import {Currency} from "~/libs/enums/enums.ts";
 
 const { Paragraph, Text } = Typography;
 
-type FormData = {
-  username: string;
-  title: string;
-};
-
-const Product: React.FC = () => {
+const ProductPage: React.FC = () => {
+  const chosenProductsContext = useContext(ChosenProductsContext);
+  const { chosenCurrency } = useContext(ChosenCurrencyContext)!;
   const [commentContent, setCommentContent] = useState<string>('');
-  const [form] = useForm<FormData>();
+
   const [comments, setComments] = useState<CommentEntityT[]>([]);
   const product = useLoaderData() as ProductEntityWithCategoryT;
   const breadCrumbs = useMemo(() => {
@@ -60,14 +60,15 @@ const Product: React.FC = () => {
   }, [product.name, product.category]);
 
   const handleTextAreaChange: ChangeEventHandler<HTMLTextAreaElement> =
-    useCallback((event) => {
-        console.log("CHANGE")
-        console.log(event.target.value);
+    useCallback(
+      (event) => {
         setCommentContent(event.target.value);
-    }, [setCommentContent]);
+      },
+      [setCommentContent],
+    );
 
   const handleFinish = useCallback(
-    (formData: FormData) => {
+    (formData: CommentFormData) => {
       setComments((prevState) => [
         ...prevState,
         {
@@ -87,27 +88,44 @@ const Product: React.FC = () => {
     [setComments, comments, commentContent],
   );
 
+  const isChecked = !!chosenProductsContext!.chosenProducts.find(
+    (checkedProduct) => checkedProduct.id === product.id,
+  );
+
+  const handleCheck = useCallback(
+    handleChooseProductCard(chosenProductsContext!.setChosenProducts),
+    [handleChooseProductCard, chosenProductsContext!.setChosenProducts],
+  );
+
   return (
     <Layout className={getValidClassNames(styles.pageLayout)}>
       <Row>
         <Breadcrumb items={breadCrumbs} />
       </Row>
 
-      <Row
-        gutter={[50, 30]}
-        className={getValidClassNames(styles.productInfoContainer)}
-      >
+      <Row gutter={[50, 30]}>
         <Col flex={2} className={getValidClassNames(styles.imageContainer)}>
           <Image height={300} src={categoryToImg[product.category.name]} />
         </Col>
         <Col flex={1}>
-          <Title
-            level={3}
-            className={getValidClassNames(styles.priceContainer)}
+          <Card
+            extra={
+              <Checkbox
+                checked={isChecked}
+                onChange={(event) =>
+                  handleCheck({
+                    id: product.id,
+                    isChecked: event.target.checked,
+                  })
+                }
+              />
+            }
+            title={product.name}
           >
-            <p>Name: {product.name}</p>
-            <p>Price: {product.price} $</p>
-          </Title>
+            <p>
+              <b>Price</b>: {exchangeCurrency({have:Currency.UAH,want:chosenCurrency,amount:product.price})} {chosenCurrency}
+            </p>
+          </Card>
         </Col>
       </Row>
       <Row>
@@ -117,44 +135,11 @@ const Product: React.FC = () => {
       </Row>
       <Row>
         <Col flex={1}>
-          <Form
-            onFinish={handleFinish}
-            form={form}
-            layout={'vertical'}
-            requiredMark={true}
-          >
-            <Form.Item
-              label="Username"
-              name="username"
-              rules={[{ required: true, message: 'Username required' }]}
-            >
-              <Input placeholder="Enter your username" />
-            </Form.Item>
-            <Form.Item
-              label="Title"
-              name="title"
-              rules={[{ required: true, message: 'Title required' }]}
-            >
-              <Input placeholder="Enter comment title" />
-            </Form.Item>
-            <Form.Item
-              rules={[{ required: true, message: 'Comment cannot be empty' }]}
-              label="Comment message"
-              name="content"
-              required
-            >
-              <Input.TextArea
-                value={commentContent}
-                rows={4}
-                onChange={handleTextAreaChange}
-              />
-            </Form.Item>
-            <Form.Item>
-              <Button type="primary" htmlType="submit">
-                Submit
-              </Button>
-            </Form.Item>
-          </Form>
+          <CommentForm
+            commentContent={commentContent}
+            handleFinish={handleFinish}
+            handleTextAreaChange={handleTextAreaChange}
+          />
         </Col>
       </Row>
       <Row>
@@ -164,20 +149,19 @@ const Product: React.FC = () => {
               <List.Item key={comment.id}>
                 <List.Item.Meta
                   avatar={
-                    <div style={{width:"30px"}}>
+                    <div>
                       <Avatar src={comment.author.avatarURL} />
-                      <br />
-                        <Text ellipsis>{comment.author.username}</Text>
                     </div>
                   }
+                  description={comment.author.username}
                   title={comment.title}
-                  description={comment.date.toUTCString()}
                 />
                 <Paragraph
                   ellipsis={{ rows: 1, expandable: true, symbol: 'more' }}
                 >
                   {comment.content}
                 </Paragraph>
+                <Text type={'secondary'}>{comment.date.toUTCString()}</Text>
               </List.Item>
             ))}
           </List>
@@ -187,4 +171,4 @@ const Product: React.FC = () => {
   );
 };
 
-export { Product };
+export { ProductPage };
