@@ -10,11 +10,9 @@ import { Layout } from '~/libs/components/layout/layout';
 import { Content } from '../../libs/components/content/content';
 import {
   useCallback,
-  useContext,
   useEffect,
   useMemo,
   useRef,
-  useState,
 } from 'react';
 import { handleChooseProductCard } from '~/libs/components/product-card/libs/helpers/handle-choose-product-card.helper';
 import { useSearchParams } from 'react-router-dom';
@@ -22,22 +20,18 @@ import { UrlParamsFilter } from '~/pages/products/libs/enums/url-params-filter.h
 import { CategoryName } from '~/libs/slices/categories/enum/category-name.enum';
 import { toast } from 'react-toastify';
 import { CategoryNameValues } from '~/libs/slices/categories/types/category-name-values.type';
-import { ChosenProductsContext } from '~/libs/components/chosen-products-provider/chosen-products-provider';
-import {ChosenCurrencyContext} from "~/libs/components/chosen-currency-provider/chosen-currency-provider.tsx";
+import {useChosenProductsContext} from "~/libs/hooks/use-chosen-products-context.hook.tsx";
+import {usePagination} from "~/libs/hooks/use-pagination.hook.tsx";
 
-const initialPagination = { page: 0, size: 10 };
+
 
 const ProductsPage: React.FC = () => {
-  useContext(ChosenCurrencyContext)!;
   const categoryErrorToastId = useRef<number | string | null>(null);
-  const chosenProductsContext = useContext(ChosenProductsContext);
+  const chosenProductsContext = useChosenProductsContext();
   const areAnyCheckedProducts =
     chosenProductsContext!.chosenProducts.length !== 0;
   const [searchParams, setSearchParams] = useSearchParams();
-  const [pagination, setPagination] = useState<{
-    page: number;
-    size: number;
-  }>(initialPagination);
+  const {pagination,resetPagination,paginateSlice,handlePaginationChange} = usePagination()
 
   const categorySidebarItems: MenuItem[] = useMemo(
     () =>
@@ -64,17 +58,14 @@ const ProductsPage: React.FC = () => {
         return searchParams;
       });
     }
-    setPagination(initialPagination);
+    resetPagination();
   }, [categoryFilter]);
 
   const filteredProductsMock = categoryFilter
     ? productsMock.filter((product) => product.category.name === categoryFilter)
     : productsMock;
 
-  const paginatedProductsMock = filteredProductsMock.slice(
-    pagination.page * pagination.size,
-    pagination.page * pagination.size + pagination.size,
-  );
+  const paginatedProductsMock = paginateSlice(filteredProductsMock);
   const handleCheck = useCallback(
     handleChooseProductCard(chosenProductsContext!.setChosenProducts),
     [handleChooseProductCard, chosenProductsContext!.setChosenProducts],
@@ -107,10 +98,6 @@ const ProductsPage: React.FC = () => {
     [setSearchParams],
   );
 
-  const handlePagination = useCallback((page: number, size: number) => {
-    setPagination({ page, size });
-  }, []);
-
   return (
     <Layout hasSider>
       <Sider handleSelect={handleSelect} items={categorySidebarItems} />
@@ -132,7 +119,7 @@ const ProductsPage: React.FC = () => {
           <Row>
             <Pagination
               showSizeChanger
-              onChange={handlePagination}
+              onChange={handlePaginationChange}
               pageSize={pagination.size}
               total={filteredProductsMock.length - pagination.size}
             />

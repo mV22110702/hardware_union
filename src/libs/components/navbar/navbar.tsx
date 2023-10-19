@@ -1,14 +1,14 @@
 import { Menu } from '../menu/menu';
 import { NavbarLink } from '../navbar-link/navbar-link';
-import React, { useContext } from 'react';
+import React from 'react';
 import { AppRoute } from '~/libs/enums/enums';
 import { getMenuItem } from '~/libs/helpers/helpers';
 import styles from './styles.module.scss';
-import { AuthContext } from '~/libs/components/auth-context-provider/auth-context-provider';
 import { CurrencyNavbarDropdown } from '~/libs/components/currency-navbar-dropdown/currency-navbar-dropdown';
+import {useAuthContext} from "~/libs/hooks/use-auth-context.hook.tsx";
 
 const Navbar: React.FC = () => {
-  const authContext = useContext(AuthContext);
+  const authContext = useAuthContext();
 
   const links = [
     { to: AppRoute.ROOT, name: 'Home' },

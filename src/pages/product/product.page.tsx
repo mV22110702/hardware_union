@@ -17,34 +17,27 @@ import styles from './styles.module.scss';
 import { categoryToImg } from '~/libs/slices/categories/maps/category-to-img.map';
 import Title from 'antd/es/typography/Title';
 import {
-  ChangeEventHandler,
   useCallback,
-  useContext,
   useMemo,
-  useState,
 } from 'react';
 import {
     exchangeCurrency,
     getBreadcrumbItem,
-    getRandomAvatarSource,
 } from '~/libs/helpers/helpers';
 import { NavLink } from 'react-router-dom';
-import { CommentEntityT } from '~/libs/slices/comments/types/comment-entity.type';
-import { toast } from 'react-toastify';
 import { handleChooseProductCard } from '~/libs/components/product-card/libs/helpers/handle-choose-product-card.helper';
-import { ChosenProductsContext } from '~/libs/components/chosen-products-provider/chosen-products-provider';
-import { ChosenCurrencyContext } from '~/libs/components/chosen-currency-provider/chosen-currency-provider.tsx';
-import {CommentForm, CommentFormData} from '~/libs/components/comment-form/comment-form.tsx';
+import {CommentForm} from '~/libs/components/comment-form/comment-form.tsx';
 import {Currency} from "~/libs/enums/enums.ts";
+import {useChosenProductsContext} from "~/libs/hooks/use-chosen-products-context.hook.tsx";
+import {useChosenCurrencyContext} from "~/libs/hooks/use-chosen-currency-context.hook.tsx";
+import {useComments} from "~/libs/hooks/use-comments.hook.tsx";
 
 const { Paragraph, Text } = Typography;
 
 const ProductPage: React.FC = () => {
-  const chosenProductsContext = useContext(ChosenProductsContext);
-  const { chosenCurrency } = useContext(ChosenCurrencyContext)!;
-  const [commentContent, setCommentContent] = useState<string>('');
+  const chosenProductsContext = useChosenProductsContext();
+  const { chosenCurrency } = useChosenCurrencyContext();
 
-  const [comments, setComments] = useState<CommentEntityT[]>([]);
   const product = useLoaderData() as ProductEntityWithCategoryT;
   const breadCrumbs = useMemo(() => {
     return [
@@ -59,34 +52,9 @@ const ProductPage: React.FC = () => {
     ];
   }, [product.name, product.category]);
 
-  const handleTextAreaChange: ChangeEventHandler<HTMLTextAreaElement> =
-    useCallback(
-      (event) => {
-        setCommentContent(event.target.value);
-      },
-      [setCommentContent],
-    );
+const {comments,commentContent,handleCommentContentChange,handleCommentSubmit}= useComments()
 
-  const handleFinish = useCallback(
-    (formData: CommentFormData) => {
-      setComments((prevState) => [
-        ...prevState,
-        {
-          id: crypto.randomUUID(),
-          date: new Date(),
-          author: {
-            avatarURL: getRandomAvatarSource(),
-            username: formData.username,
-          },
-          content: commentContent,
-          title: formData.title,
-        },
-      ]);
-      toast.success('Comment has been added!');
-      console.log(`Comment: ${commentContent}`);
-    },
-    [setComments, comments, commentContent],
-  );
+
 
   const isChecked = !!chosenProductsContext!.chosenProducts.find(
     (checkedProduct) => checkedProduct.id === product.id,
@@ -137,8 +105,8 @@ const ProductPage: React.FC = () => {
         <Col flex={1}>
           <CommentForm
             commentContent={commentContent}
-            handleFinish={handleFinish}
-            handleTextAreaChange={handleTextAreaChange}
+            handleFinish={handleCommentSubmit}
+            handleTextAreaChange={handleCommentContentChange}
           />
         </Col>
       </Row>

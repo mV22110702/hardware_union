@@ -1,14 +1,12 @@
 import { Dropdown, MenuProps, Space } from 'antd';
 import styles from './styles.module.scss';
-import { useCallback, useContext, useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { Currency } from '~/libs/enums/currency.enum';
-import { ChosenCurrencyContext } from '~/libs/components/chosen-currency-provider/chosen-currency-provider';
 import { CurrencyValues } from '~/libs/types/currency-values.type';
+import {useChosenCurrencyContext} from "~/libs/hooks/use-chosen-currency-context.hook.tsx";
 
 const CurrencyNavbarDropdown = () => {
-  const { chosenCurrency, setChosenCurrency } = useContext(
-    ChosenCurrencyContext,
-  )!;
+  const { chosenCurrency, setChosenCurrency } = useChosenCurrencyContext();
   useEffect(() => {}, []);
   const handleCurrencyChange = useCallback<NonNullable<MenuProps['onClick']>>(
     (event) => {

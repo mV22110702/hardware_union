@@ -1,11 +1,11 @@
 import { Card, Checkbox } from 'antd';
 import { ProductEntityWithCategoryT } from '~/libs/slices/products/types/product-entity-with-category.type';
 import { handleChooseProductCard } from '~/libs/components/product-card/libs/helpers/handle-choose-product-card.helper';
-import { memo, useContext, useMemo } from 'react';
+import { memo, useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
 import { AppRoute, Currency } from '~/libs/enums/enums';
 import { exchangeCurrency, getValidPath } from '~/libs/helpers/helpers';
-import { ChosenCurrencyContext } from '~/libs/components/chosen-currency-provider/chosen-currency-provider.tsx';
+import {useChosenCurrencyContext} from "~/libs/hooks/use-chosen-currency-context.hook.tsx";
 
 type Properties = {
   productWithCategory: ProductEntityWithCategoryT;
@@ -15,7 +15,7 @@ type Properties = {
 
 const ProductCard: React.FC<Properties> = memo(
   ({ productWithCategory, handleCheck, isChecked }) => {
-    const { chosenCurrency } = useContext(ChosenCurrencyContext)!;
+      const {chosenCurrency} = useChosenCurrencyContext();
     const productPath = useMemo(() => {
       return getValidPath(AppRoute.PRODUCT, {
         productId: productWithCategory.id.toString(),
