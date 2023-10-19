@@ -115,7 +115,8 @@ const ProductsPage: React.FC = () => {
               showSizeChanger
               onChange={handlePaginationChange}
               pageSize={pagination.size}
-              total={filteredProductsMock.length - pagination.size}
+              pageSizeOptions={[5,10,20,50,100]}
+              total={filteredProductsMock.length}
             />
           </Row>
         </Content>
