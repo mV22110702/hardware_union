@@ -22,7 +22,7 @@ const ProductsPage: React.FC = () => {
   const categoryErrorToastId = useRef<number | string | null>(null);
   const chosenProductsContext = useChosenProductsContext();
   const areAnyCheckedProducts =
-    chosenProductsContext!.chosenProducts.length !== 0;
+    chosenProductsContext.chosenProducts.length !== 0;
   const [searchParams, setSearchParams] = useSearchParams();
   const { pagination, resetPagination, paginateSlice, handlePaginationChange } =
     usePagination();
@@ -32,7 +32,7 @@ const ProductsPage: React.FC = () => {
       Object.values(categoriesMock).map(({ name }) =>
         getMenuItem({ label: name, key: name }),
       ),
-    [categoriesMock],
+    [],
   );
 
   const categoryFilter = searchParams.get(
@@ -53,20 +53,20 @@ const ProductsPage: React.FC = () => {
       });
     }
     resetPagination();
-  }, [categoryFilter]);
+  }, [categoryFilter,resetPagination,setSearchParams]);
 
   const filteredProductsMock = categoryFilter
     ? productsMock.filter((product) => product.category.name === categoryFilter)
     : productsMock;
 
   const paginatedProductsMock = paginateSlice(filteredProductsMock);
-  const handleCheck = useCallback(
-    handleChooseProductCard(chosenProductsContext!.setChosenProducts),
-    [handleChooseProductCard, chosenProductsContext!.setChosenProducts],
+  const handleCheck = useMemo(
+      ()=>handleChooseProductCard(chosenProductsContext.setChosenProducts),
+    [chosenProductsContext.setChosenProducts],
   );
 
   const productCards = paginatedProductsMock.map((product) => {
-    const isChecked = !!chosenProductsContext!.chosenProducts.find(
+    const isChecked = !!chosenProductsContext.chosenProducts.find(
       (checkedProduct) => checkedProduct.id === product.id,
     );
     return (
@@ -102,9 +102,9 @@ const ProductsPage: React.FC = () => {
               style={{ margin: 30, padding: 10, fontSize: 15 }}
               color="geekblue"
               closable
-              onClose={() => chosenProductsContext!.setChosenProducts([])}
+              onClose={() => chosenProductsContext.setChosenProducts([])}
             >
-              {chosenProductsContext!.chosenProducts.length} Chosen
+              {chosenProductsContext.chosenProducts.length} Chosen
             </Tag>
           )}
           <Row style={{ marginRight: 0 }} justify="start" gutter={[20, 40]}>

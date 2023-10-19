@@ -36,7 +36,7 @@ export const useComments = () => {
       toast.success('Comment has been added!');
       console.log(`Comment: ${commentContent}`);
     },
-    [setComments, comments, commentContent],
+    [setComments, commentContent],
   );
 
   return {

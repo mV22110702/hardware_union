@@ -12,7 +12,7 @@ const CurrencyNavbarDropdown = () => {
     (event) => {
       setChosenCurrency(event.key as CurrencyValues);
     },
-    [chosenCurrency, setChosenCurrency],
+    [setChosenCurrency],
   );
   const dropDownItems: MenuProps['items'] = [
     {

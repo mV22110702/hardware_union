@@ -16,7 +16,7 @@ import { getValidClassNames } from '~/libs/helpers/get-valid-class-names.helper'
 import styles from './styles.module.scss';
 import { categoryToImg } from '~/libs/slices/categories/maps/category-to-img.map';
 import Title from 'antd/es/typography/Title';
-import { useCallback, useMemo } from 'react';
+import { useMemo } from 'react';
 import { exchangeCurrency, getBreadcrumbItem } from '~/libs/helpers/helpers';
 import { NavLink } from 'react-router-dom';
 import { handleChooseProductCard } from '~/libs/components/product-card/libs/helpers/handle-choose-product-card.helper';
@@ -53,13 +53,13 @@ const ProductPage: React.FC = () => {
     handleCommentSubmit,
   } = useComments();
 
-  const isChecked = !!chosenProductsContext!.chosenProducts.find(
+  const isChecked = !!chosenProductsContext.chosenProducts.find(
     (checkedProduct) => checkedProduct.id === product.id,
   );
 
-  const handleCheck = useCallback(
-    handleChooseProductCard(chosenProductsContext!.setChosenProducts),
-    [handleChooseProductCard, chosenProductsContext!.setChosenProducts],
+  const handleCheck = useMemo(
+      ()=>handleChooseProductCard(chosenProductsContext.setChosenProducts),
+    [chosenProductsContext.setChosenProducts],
   );
 
   return (
