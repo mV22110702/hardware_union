@@ -1,4 +1,4 @@
-import {MenuProps} from "antd";
+import { MenuProps } from 'antd';
 
 type MenuMode = Required<MenuProps>['mode'];
 

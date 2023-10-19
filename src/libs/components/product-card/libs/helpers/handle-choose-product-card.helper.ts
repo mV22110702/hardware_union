@@ -1,4 +1,4 @@
-import {Dispatch, SetStateAction} from 'react';
+import { Dispatch, SetStateAction } from 'react';
 import { ChosenProduct } from '~/pages/products/libs/types/checked-product.type';
 
 const handleChooseProductCard =

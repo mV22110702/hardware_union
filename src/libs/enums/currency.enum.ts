@@ -1,6 +1,6 @@
 const Currency = {
-    USD:'$',
-    UAH:'₴'
+  USD: '$',
+  UAH: '₴',
 } as const;
 
 export { Currency };

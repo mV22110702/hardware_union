@@ -1,7 +1,7 @@
-import {AppRoute} from "~/libs/enums/enums";
+import { AppRoute } from '~/libs/enums/enums';
 
 type ParametersOptions = {
-[AppRoute.PRODUCT]:{productId:string}
+  [AppRoute.PRODUCT]: { productId: string };
 };
 
-export { type ParametersOptions};
+export { type ParametersOptions };

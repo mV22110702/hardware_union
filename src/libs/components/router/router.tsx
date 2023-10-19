@@ -1,6 +1,6 @@
 import { AppRoute } from '~/libs/enums/enums';
 import { RouterProvider } from '../router-provider/router-provider';
-import {redirect, Route} from 'react-router';
+import { redirect, Route } from 'react-router';
 import { App } from '../app/app';
 import { NotFoundPage } from '~/pages/not-found/not-found.page.tsx';
 import { ProductsPage } from '~/pages/products/products.page';

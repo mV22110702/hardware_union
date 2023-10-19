@@ -1,8 +1,8 @@
-import {useContext} from "react";
-import {ChosenCurrencyContext} from "~/libs/components/chosen-currency-provider/chosen-currency-provider.tsx";
+import { useContext } from 'react';
+import { ChosenCurrencyContext } from '~/libs/components/chosen-currency-provider/chosen-currency-provider.tsx';
 
 export const useChosenCurrencyContext = () => {
-    const chosenCurrencyContext = useContext(ChosenCurrencyContext)!;
+  const chosenCurrencyContext = useContext(ChosenCurrencyContext)!;
 
-    return chosenCurrencyContext;
-}
+  return chosenCurrencyContext;
+};

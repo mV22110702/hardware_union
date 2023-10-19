@@ -1,14 +1,14 @@
 @import "../../assets/css/variables.scss";
-.pageLayout{
+.pageLayout {
   padding-inline: 40px;
 }
-.imageContainer{
+.imageContainer {
   display: flex;
   justify-content: center;
 }
 .detailsContainer {
   box-shadow: $shadow-light;
 }
-.commentsContainer{
+.commentsContainer {
   margin-top: 12vmin;
 }

@@ -5,10 +5,9 @@ const AuthContext = createContext<{
   setAuth: React.Dispatch<React.SetStateAction<boolean>>;
 } | null>(null);
 
-
 type Properties = PropsWithChildren;
 
-const AuthContextProvider: React.FC<Properties> = ({children}) => {
+const AuthContextProvider: React.FC<Properties> = ({ children }) => {
   const [auth, setAuth] = useState<boolean>(false);
 
   return (

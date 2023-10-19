@@ -5,7 +5,7 @@ import { AppRoute } from '~/libs/enums/enums';
 import { getMenuItem } from '~/libs/helpers/helpers';
 import styles from './styles.module.scss';
 import { CurrencyNavbarDropdown } from '~/libs/components/currency-navbar-dropdown/currency-navbar-dropdown';
-import {useAuthContext} from "~/libs/hooks/use-auth-context.hook.tsx";
+import { useAuthContext } from '~/libs/hooks/use-auth-context.hook.tsx';
 
 const Navbar: React.FC = () => {
   const authContext = useAuthContext();

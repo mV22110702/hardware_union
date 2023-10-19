@@ -8,22 +8,15 @@ import { productsMock } from '~/libs/slices/products/mocks/products.mock';
 import { ProductCard } from '~/libs/components/product-card/product-card';
 import { Layout } from '~/libs/components/layout/layout';
 import { Content } from '../../libs/components/content/content';
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-} from 'react';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import { handleChooseProductCard } from '~/libs/components/product-card/libs/helpers/handle-choose-product-card.helper';
 import { useSearchParams } from 'react-router-dom';
 import { UrlParamsFilter } from '~/pages/products/libs/enums/url-params-filter.helper';
 import { CategoryName } from '~/libs/slices/categories/enum/category-name.enum';
 import { toast } from 'react-toastify';
 import { CategoryNameValues } from '~/libs/slices/categories/types/category-name-values.type';
-import {useChosenProductsContext} from "~/libs/hooks/use-chosen-products-context.hook.tsx";
-import {usePagination} from "~/libs/hooks/use-pagination.hook.tsx";
-
-
+import { useChosenProductsContext } from '~/libs/hooks/use-chosen-products-context.hook.tsx';
+import { usePagination } from '~/libs/hooks/use-pagination.hook.tsx';
 
 const ProductsPage: React.FC = () => {
   const categoryErrorToastId = useRef<number | string | null>(null);
@@ -31,7 +24,8 @@ const ProductsPage: React.FC = () => {
   const areAnyCheckedProducts =
     chosenProductsContext!.chosenProducts.length !== 0;
   const [searchParams, setSearchParams] = useSearchParams();
-  const {pagination,resetPagination,paginateSlice,handlePaginationChange} = usePagination()
+  const { pagination, resetPagination, paginateSlice, handlePaginationChange } =
+    usePagination();
 
   const categorySidebarItems: MenuItem[] = useMemo(
     () =>

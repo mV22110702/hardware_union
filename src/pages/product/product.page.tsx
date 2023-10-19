@@ -16,21 +16,15 @@ import { getValidClassNames } from '~/libs/helpers/get-valid-class-names.helper'
 import styles from './styles.module.scss';
 import { categoryToImg } from '~/libs/slices/categories/maps/category-to-img.map';
 import Title from 'antd/es/typography/Title';
-import {
-  useCallback,
-  useMemo,
-} from 'react';
-import {
-    exchangeCurrency,
-    getBreadcrumbItem,
-} from '~/libs/helpers/helpers';
+import { useCallback, useMemo } from 'react';
+import { exchangeCurrency, getBreadcrumbItem } from '~/libs/helpers/helpers';
 import { NavLink } from 'react-router-dom';
 import { handleChooseProductCard } from '~/libs/components/product-card/libs/helpers/handle-choose-product-card.helper';
-import {CommentForm} from '~/libs/components/comment-form/comment-form.tsx';
-import {Currency} from "~/libs/enums/enums.ts";
-import {useChosenProductsContext} from "~/libs/hooks/use-chosen-products-context.hook.tsx";
-import {useChosenCurrencyContext} from "~/libs/hooks/use-chosen-currency-context.hook.tsx";
-import {useComments} from "~/libs/hooks/use-comments.hook.tsx";
+import { CommentForm } from '~/libs/components/comment-form/comment-form.tsx';
+import { Currency } from '~/libs/enums/enums.ts';
+import { useChosenProductsContext } from '~/libs/hooks/use-chosen-products-context.hook.tsx';
+import { useChosenCurrencyContext } from '~/libs/hooks/use-chosen-currency-context.hook.tsx';
+import { useComments } from '~/libs/hooks/use-comments.hook.tsx';
 
 const { Paragraph, Text } = Typography;
 
@@ -52,9 +46,12 @@ const ProductPage: React.FC = () => {
     ];
   }, [product.name, product.category]);
 
-const {comments,commentContent,handleCommentContentChange,handleCommentSubmit}= useComments()
-
-
+  const {
+    comments,
+    commentContent,
+    handleCommentContentChange,
+    handleCommentSubmit,
+  } = useComments();
 
   const isChecked = !!chosenProductsContext!.chosenProducts.find(
     (checkedProduct) => checkedProduct.id === product.id,
@@ -91,7 +88,13 @@ const {comments,commentContent,handleCommentContentChange,handleCommentSubmit}= 
             title={product.name}
           >
             <p>
-              <b>Price</b>: {exchangeCurrency({have:Currency.UAH,want:chosenCurrency,amount:product.price})} {chosenCurrency}
+              <b>Price</b>:{' '}
+              {exchangeCurrency({
+                have: Currency.UAH,
+                want: chosenCurrency,
+                amount: product.price,
+              })}{' '}
+              {chosenCurrency}
             </p>
           </Card>
         </Col>

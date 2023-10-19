@@ -3,7 +3,7 @@ import styles from './styles.module.scss';
 import { useCallback, useEffect } from 'react';
 import { Currency } from '~/libs/enums/currency.enum';
 import { CurrencyValues } from '~/libs/types/currency-values.type';
-import {useChosenCurrencyContext} from "~/libs/hooks/use-chosen-currency-context.hook.tsx";
+import { useChosenCurrencyContext } from '~/libs/hooks/use-chosen-currency-context.hook.tsx';
 
 const CurrencyNavbarDropdown = () => {
   const { chosenCurrency, setChosenCurrency } = useChosenCurrencyContext();

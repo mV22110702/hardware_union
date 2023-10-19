@@ -3,8 +3,8 @@ import { ChangeEventHandler } from 'react';
 import { useForm } from 'antd/es/form/Form';
 
 type CommentFormData = {
-    username: string;
-    title: string;
+  username: string;
+  title: string;
 };
 
 type Properties = {

@@ -9,13 +9,13 @@ function App() {
   const navigation = useNavigation();
   const hasSider = navigation.location;
   return (
-      <AntLayout>
-        <Header />
-        <Main>
-          <Outlet />
-        </Main>
-        <Footer />
-      </AntLayout>
+    <AntLayout>
+      <Header />
+      <Main>
+        <Outlet />
+      </Main>
+      <Footer />
+    </AntLayout>
   );
 }
 

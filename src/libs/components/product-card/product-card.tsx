@@ -5,7 +5,7 @@ import { memo, useMemo } from 'react';
 import { NavLink } from 'react-router-dom';
 import { AppRoute, Currency } from '~/libs/enums/enums';
 import { exchangeCurrency, getValidPath } from '~/libs/helpers/helpers';
-import {useChosenCurrencyContext} from "~/libs/hooks/use-chosen-currency-context.hook.tsx";
+import { useChosenCurrencyContext } from '~/libs/hooks/use-chosen-currency-context.hook.tsx';
 
 type Properties = {
   productWithCategory: ProductEntityWithCategoryT;
@@ -15,7 +15,7 @@ type Properties = {
 
 const ProductCard: React.FC<Properties> = memo(
   ({ productWithCategory, handleCheck, isChecked }) => {
-      const {chosenCurrency} = useChosenCurrencyContext();
+    const { chosenCurrency } = useChosenCurrencyContext();
     const productPath = useMemo(() => {
       return getValidPath(AppRoute.PRODUCT, {
         productId: productWithCategory.id.toString(),

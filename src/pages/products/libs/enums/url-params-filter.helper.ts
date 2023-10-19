@@ -1,5 +1,5 @@
 const UrlParamsFilter = {
-    CATEGORY: 'category'
+  CATEGORY: 'category',
 } as const;
 
 export { UrlParamsFilter };
