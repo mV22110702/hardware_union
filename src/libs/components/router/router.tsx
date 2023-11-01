@@ -7,10 +7,12 @@ import { ProductPage } from '~/pages/product/product.page.tsx';
 import { createBrowserHistory } from 'history';
 import { useLayoutEffect, useState } from 'react';
 import { useHistoryLogContext } from '~/libs/hooks/use-history-log-context.hook.tsx';
-import {HistoryPage} from "~/pages/history/history.page.tsx";
+import { HistoryPage } from '~/pages/history/history.page.tsx';
+import { CategoriesSiderLayout } from '~/libs/components/categories-sider-layout/categories-sider-layout.tsx';
+import {HomePage} from "~/pages/home/home.page.tsx";
 const history = createBrowserHistory();
 const Router = (): JSX.Element => {
-  const [,historyLogDispatch] = useHistoryLogContext();
+  const [, historyLogDispatch] = useHistoryLogContext();
   const [state, setState] = useState({
     action: history.action,
     location: history.location,
@@ -37,13 +39,13 @@ const Router = (): JSX.Element => {
     >
       <Routes>
         <Route element={<App />}>
-          <Route path={AppRoute.ROOT} element={<ProductsPage />} />
-          <Route
-            path={AppRoute.PRODUCT}
-            element={<ProductPage />}
-          />
+          <Route element={<CategoriesSiderLayout />}>
+            <Route index element={<HomePage/>}/>
+            <Route path={AppRoute.CATEGORIES} element={<ProductsPage />} />
+          </Route>
+          <Route path={AppRoute.PRODUCT} element={<ProductPage />} />
         </Route>
-        <Route path={AppRoute.HISTORY} element={<HistoryPage/>}/>
+        <Route path={AppRoute.HISTORY} element={<HistoryPage />} />
         <Route path={AppRoute.ANY} element={<NotFoundPage />} />
       </Routes>
     </LibraryRouter>

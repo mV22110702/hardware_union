@@ -17,7 +17,7 @@ import { categoryToImg } from '~/libs/slices/categories/maps/category-to-img.map
 import Title from 'antd/es/typography/Title';
 import { useLayoutEffect, useMemo, useState } from 'react';
 import { exchangeCurrency, getBreadcrumbItem } from '~/libs/helpers/helpers';
-import { Navigate, NavLink, useParams } from 'react-router-dom';
+import {generatePath, Navigate, NavLink, useParams} from 'react-router-dom';
 import { handleChooseProductCard } from '~/libs/components/product-card/libs/helpers/handle-choose-product-card.helper';
 import { CommentForm } from '~/libs/components/comment-form/comment-form.tsx';
 import { AppRoute, Currency } from '~/libs/enums/enums.ts';
@@ -61,7 +61,7 @@ const ProductPage: React.FC = () => {
       : [
           getBreadcrumbItem({
             title: (
-              <NavLink to={`/?category=${product.category.name}`}>
+              <NavLink to={generatePath(AppRoute.CATEGORIES,{categoryId:product.category.id.toString()})}>
                 {product.category.name}
               </NavLink>
             ),

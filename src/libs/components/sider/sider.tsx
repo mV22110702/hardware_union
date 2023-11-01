@@ -1,27 +1,36 @@
-import { Layout } from 'antd';
+import {Layout, List} from 'antd';
 import styles from './styles.module.scss';
 import { getValidClassNames } from '~/libs/helpers/get-valid-class-names.helper';
-import { Menu } from '~/libs/components/components';
-import { MenuItem } from '~/libs/types/menu-item.type';
+import {categoriesMock} from "~/libs/slices/categories/mocks/categories.mock.ts";
+import {generatePath, NavLink} from "react-router-dom";
+import {AppRoute} from "~/libs/enums/app-route.enum.ts";
 
 const { Sider: AntSider } = Layout;
 
 type Properties = {
   className?: string;
-  items: MenuItem[];
-  handleSelect?: (key: string) => void;
 };
 
-const Sider: React.FC<Properties> = ({ items, className, handleSelect }) => {
+const Sider: React.FC<Properties> = ({ className }) => {
   return (
     <AntSider
       className={getValidClassNames(className, styles.sider)}
       theme={'light'}
     >
-      <Menu
-        handleSelect={handleSelect}
-        items={items}
-        className={styles.siderMenu}
+      <List
+        itemLayout={'vertical'}
+        dataSource={Object.values(categoriesMock)}
+        renderItem={({ name, id }) => (
+          <List.Item>
+            <NavLink
+              to={generatePath(AppRoute.CATEGORIES, {
+                categoryId: id.toString(),
+              })}
+            >
+              {name}
+            </NavLink>
+          </List.Item>
+        )}
       />
     </AntSider>
   );
