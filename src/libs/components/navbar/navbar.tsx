@@ -12,6 +12,7 @@ const Navbar: React.FC = () => {
 
   const links = [
     { to: AppRoute.ROOT, name: 'Home' },
+    { to: AppRoute.HISTORY, name: 'History' },
     { to: AppRoute.ROOT, name: authContext?.auth ? 'Sign out' : 'Sign in' },
   ];
 

@@ -1,4 +1,3 @@
-import { useLoaderData } from 'react-router';
 import { ProductEntityWithCategoryT } from '~/libs/slices/products/types/product-entity-with-category.type';
 import {
   Avatar,
@@ -16,35 +15,60 @@ import { getValidClassNames } from '~/libs/helpers/get-valid-class-names.helper'
 import styles from './styles.module.scss';
 import { categoryToImg } from '~/libs/slices/categories/maps/category-to-img.map';
 import Title from 'antd/es/typography/Title';
-import { useMemo } from 'react';
+import { useLayoutEffect, useMemo, useState } from 'react';
 import { exchangeCurrency, getBreadcrumbItem } from '~/libs/helpers/helpers';
-import { NavLink } from 'react-router-dom';
+import { Navigate, NavLink, useParams } from 'react-router-dom';
 import { handleChooseProductCard } from '~/libs/components/product-card/libs/helpers/handle-choose-product-card.helper';
 import { CommentForm } from '~/libs/components/comment-form/comment-form.tsx';
-import { Currency } from '~/libs/enums/enums.ts';
+import { AppRoute, Currency } from '~/libs/enums/enums.ts';
 import { useChosenProductsContext } from '~/libs/hooks/use-chosen-products-context.hook.tsx';
 import { useChosenCurrencyContext } from '~/libs/hooks/use-chosen-currency-context.hook.tsx';
 import { useComments } from '~/libs/hooks/use-comments.hook.tsx';
+import { productsMock } from '~/libs/slices/products/mocks/products.mock.ts';
 
 const { Paragraph, Text } = Typography;
 
 const ProductPage: React.FC = () => {
   const chosenProductsContext = useChosenProductsContext();
   const { chosenCurrency } = useChosenCurrencyContext();
+  const params = useParams<{ productId: string }>();
+  const [isError, setIsError] = useState<boolean>(false);
+  const [product, setProduct] = useState<ProductEntityWithCategoryT | null>(
+    null,
+  );
 
-  const product = useLoaderData() as ProductEntityWithCategoryT;
+  useLayoutEffect(() => {
+    if (!params.productId) {
+      setIsError(true);
+      return;
+    }
+    const productId = Number.parseInt(params.productId);
+    if (Number.isNaN(productId)) {
+      setIsError(true);
+      return;
+    }
+    const product = productsMock.find((product) => product.id === productId);
+    if (!product) {
+      setIsError(true);
+      return;
+    }
+    setProduct(product);
+  }, [params.productId]);
+
   const breadCrumbs = useMemo(() => {
-    return [
-      getBreadcrumbItem({
-        title: (
-          <NavLink to={`/?category=${product.category.name}`}>
-            {product.category.name}
-          </NavLink>
-        ),
-      }),
-      getBreadcrumbItem({ title: product.name }),
-    ];
-  }, [product.name, product.category]);
+    return !product
+      ? []
+      : [
+          getBreadcrumbItem({
+            title: (
+              <NavLink to={`/?category=${product.category.name}`}>
+                {product.category.name}
+              </NavLink>
+            ),
+          }),
+          getBreadcrumbItem({ title: product.name }),
+        ];
+  }, [product?.name, product?.category]);
 
   const {
     comments,
@@ -54,21 +78,23 @@ const ProductPage: React.FC = () => {
   } = useComments();
 
   const isChecked = !!chosenProductsContext.chosenProducts.find(
-    (checkedProduct) => checkedProduct.id === product.id,
+    (checkedProduct) => checkedProduct.id === product?.id,
   );
 
   const handleCheck = useMemo(
-      ()=>handleChooseProductCard(chosenProductsContext.setChosenProducts),
+    () => handleChooseProductCard(chosenProductsContext.setChosenProducts),
     [chosenProductsContext.setChosenProducts],
   );
 
-  return (
-    <Layout className={getValidClassNames(styles.pageLayout)}>
-      <Row>
-        <Breadcrumb items={breadCrumbs} />
-      </Row>
-
-      <Row gutter={[50, 30]}>
+  const productInfo =
+    !product && !isError ? (
+      <Col flex={1}>Loading...</Col>
+    ) : isError ? (
+      <Navigate to={AppRoute.ROOT} />
+    ) : !product ? (
+        <Navigate to={AppRoute.ROOT} />
+    ) : (
+      <>
         <Col flex={2} className={getValidClassNames(styles.imageContainer)}>
           <Image height={300} src={categoryToImg[product.category.name]} />
         </Col>
@@ -98,7 +124,16 @@ const ProductPage: React.FC = () => {
             </p>
           </Card>
         </Col>
+      </>
+    );
+
+  return (
+    <Layout className={getValidClassNames(styles.pageLayout)}>
+      <Row>
+        <Breadcrumb items={breadCrumbs} />
       </Row>
+      {productInfo}
+      <Row gutter={[50, 30]}></Row>
       <Row>
         <Col flex={1}>
           <Title level={4}>Comments</Title>

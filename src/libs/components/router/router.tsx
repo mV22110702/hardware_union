@@ -1,30 +1,53 @@
 import { AppRoute } from '~/libs/enums/enums';
-import { RouterProvider } from '../router-provider/router-provider';
-import { redirect, Route } from 'react-router';
+import { Route, Routes, Router as LibraryRouter } from 'react-router';
 import { App } from '../app/app';
 import { NotFoundPage } from '~/pages/not-found/not-found.page.tsx';
 import { ProductsPage } from '~/pages/products/products.page';
 import { ProductPage } from '~/pages/product/product.page.tsx';
-import { productsMock } from '~/libs/slices/products/mocks/products.mock';
+import { createBrowserHistory } from 'history';
+import { useLayoutEffect, useState } from 'react';
+import { useHistoryLogContext } from '~/libs/hooks/use-history-log-context.hook.tsx';
+import {HistoryPage} from "~/pages/history/history.page.tsx";
+const history = createBrowserHistory();
+const Router = (): JSX.Element => {
+  const [,historyLogDispatch] = useHistoryLogContext();
+  const [state, setState] = useState({
+    action: history.action,
+    location: history.location,
+  });
 
-const Router = (): JSX.Element => (
-  <RouterProvider>
-    <Route element={<App />}>
-      <Route path={AppRoute.ROOT} element={<ProductsPage />} />
-      <Route
-        path={AppRoute.PRODUCT}
-        element={<ProductPage />}
-        loader={({ params }) => {
-          const product = productsMock.find(
-            (product) => product.id.toString() === params.productId,
-          );
-          return product ?? redirect(AppRoute.ANY);
-        }}
-      />
-    </Route>
+  useLayoutEffect(() => {
+    history.listen(({ action, location }) => {
+      setState({ action, location });
+    });
+  }, [historyLogDispatch]);
 
-    <Route path={AppRoute.ANY} element={<NotFoundPage />} />
-  </RouterProvider>
-);
+  useLayoutEffect(() => {
+    historyLogDispatch({
+      type: state.action,
+      payload: { path: state.location.pathname },
+    });
+  }, [state]);
+
+  return (
+    <LibraryRouter
+      location={state.location}
+      navigator={history}
+      navigationType={state.action}
+    >
+      <Routes>
+        <Route element={<App />}>
+          <Route path={AppRoute.ROOT} element={<ProductsPage />} />
+          <Route
+            path={AppRoute.PRODUCT}
+            element={<ProductPage />}
+          />
+        </Route>
+        <Route path={AppRoute.HISTORY} element={<HistoryPage/>}/>
+        <Route path={AppRoute.ANY} element={<NotFoundPage />} />
+      </Routes>
+    </LibraryRouter>
+  );
+};
 
 export { Router };

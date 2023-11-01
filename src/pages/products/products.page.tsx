@@ -53,7 +53,7 @@ const ProductsPage: React.FC = () => {
       });
     }
     resetPagination();
-  }, [categoryFilter,resetPagination,setSearchParams]);
+  }, [resetPagination]);
 
   const filteredProductsMock = categoryFilter
     ? productsMock.filter((product) => product.category.name === categoryFilter)
