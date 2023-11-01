@@ -1,9 +1,10 @@
-import {Layout, List} from 'antd';
+import { Layout, List } from 'antd';
 import styles from './styles.module.scss';
 import { getValidClassNames } from '~/libs/helpers/get-valid-class-names.helper';
-import {categoriesMock} from "~/libs/slices/categories/mocks/categories.mock.ts";
-import {generatePath, NavLink} from "react-router-dom";
-import {AppRoute} from "~/libs/enums/app-route.enum.ts";
+import { categoriesMock } from '~/libs/slices/categories/mocks/categories.mock.ts';
+import { generatePath } from 'react-router-dom';
+import { AppRoute } from '~/libs/enums/app-route.enum.ts';
+import { SiderListItem } from '~/libs/components/sider-list-item/sider-list-item.tsx';
 
 const { Sider: AntSider } = Layout;
 
@@ -21,15 +22,12 @@ const Sider: React.FC<Properties> = ({ className }) => {
         itemLayout={'vertical'}
         dataSource={Object.values(categoriesMock)}
         renderItem={({ name, id }) => (
-          <List.Item>
-            <NavLink
-              to={generatePath(AppRoute.CATEGORIES, {
-                categoryId: id.toString(),
-              })}
-            >
-              {name}
-            </NavLink>
-          </List.Item>
+          <SiderListItem
+            to={generatePath(AppRoute.CATEGORIES, {
+              categoryId: id.toString(),
+            })}
+            label={name}
+          />
         )}
       />
     </AntSider>

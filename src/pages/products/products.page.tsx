@@ -75,10 +75,10 @@ const ProductsPage: React.FC = () => {
           {chosenProductsContext.chosenProducts.length} Chosen
         </Tag>
       )}
-      <Row style={{ marginRight: 0 }} justify="start" gutter={[20, 40]}>
+      <Row style={{ marginRight: 0, marginBottom:20 }} justify="start" gutter={[20, 40]}>
         {productCards}
       </Row>
-      <Row>
+      <Row justify={'center'}>
         <Pagination
             current={pagination.page}
           showSizeChanger
