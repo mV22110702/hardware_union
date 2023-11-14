@@ -7,6 +7,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { ChosenProductsProvider } from '~/libs/components/chosen-products-provider/chosen-products-provider';
 import { ChosenCurrencyProvider } from '~/libs/components/chosen-currency-provider/chosen-currency-provider';
 import { HistoryLogContextProvider } from '~/libs/components/history-log-context-provider/history-log-context-provider.tsx';
+import { ModalProviders } from '~/libs/components/modal-providers/modal-providers.tsx';
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
 );
@@ -18,7 +19,9 @@ root.render(
       <ChosenProductsProvider>
         <AuthContextProvider>
           <HistoryLogContextProvider>
-            <Router />
+            <ModalProviders>
+              <Router />
+            </ModalProviders>
           </HistoryLogContextProvider>
         </AuthContextProvider>
       </ChosenProductsProvider>

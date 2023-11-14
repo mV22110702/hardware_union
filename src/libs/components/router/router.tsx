@@ -7,7 +7,6 @@ import { ProductPage } from '~/pages/product/product.page.tsx';
 import { createBrowserHistory } from 'history';
 import { useLayoutEffect, useState } from 'react';
 import { useHistoryLogContext } from '~/libs/hooks/use-history-log-context.hook.tsx';
-import { HistoryPage } from '~/pages/history/history.page.tsx';
 import { CategoriesSiderLayout } from '~/libs/components/categories-sider-layout/categories-sider-layout.tsx';
 import {HomePage} from "~/pages/home/home.page.tsx";
 const history = createBrowserHistory();
@@ -45,7 +44,6 @@ const Router = (): JSX.Element => {
           </Route>
           <Route path={AppRoute.PRODUCT} element={<ProductPage />} />
         </Route>
-        <Route path={AppRoute.HISTORY} element={<HistoryPage />} />
         <Route path={AppRoute.ANY} element={<NotFoundPage />} />
       </Routes>
     </LibraryRouter>
