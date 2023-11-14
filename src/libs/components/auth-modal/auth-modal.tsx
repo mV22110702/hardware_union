@@ -54,8 +54,6 @@ export const AuthModal: FC<Properties> = ({
       <Form<SignInFormData>
         preserve={false}
         form={form}
-        name="normal_login"
-        className="login-form"
         onFinish={onFinish}
       >
         <Form.Item
