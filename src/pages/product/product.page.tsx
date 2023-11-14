@@ -17,7 +17,7 @@ import { categoryToImg } from '~/libs/slices/categories/maps/category-to-img.map
 import Title from 'antd/es/typography/Title';
 import { useLayoutEffect, useMemo, useState } from 'react';
 import { exchangeCurrency, getBreadcrumbItem } from '~/libs/helpers/helpers';
-import {generatePath, Navigate, NavLink, useParams} from 'react-router-dom';
+import { generatePath, Navigate, NavLink, useParams } from 'react-router-dom';
 import { handleChooseProductCard } from '~/libs/components/product-card/libs/helpers/handle-choose-product-card.helper';
 import { CommentForm } from '~/libs/components/comment-form/comment-form.tsx';
 import { AppRoute, Currency } from '~/libs/enums/enums.ts';
@@ -61,7 +61,11 @@ const ProductPage: React.FC = () => {
       : [
           getBreadcrumbItem({
             title: (
-              <NavLink to={generatePath(AppRoute.CATEGORIES,{categoryId:product.category.id.toString()})}>
+              <NavLink
+                to={generatePath(AppRoute.CATEGORIES, {
+                  categoryId: product.category.id.toString(),
+                })}
+              >
                 {product.category.name}
               </NavLink>
             ),
@@ -92,7 +96,7 @@ const ProductPage: React.FC = () => {
     ) : isError ? (
       <Navigate to={AppRoute.ROOT} />
     ) : !product ? (
-        <Navigate to={AppRoute.ROOT} />
+      <Navigate to={AppRoute.ROOT} />
     ) : (
       <>
         <Col flex={2} className={getValidClassNames(styles.imageContainer)}>
@@ -111,17 +115,19 @@ const ProductPage: React.FC = () => {
                 }
               />
             }
-            title={product.name}
+            title={<Text copyable={{text:window.location.href, tooltips:'Copy link'}}>{product.name}</Text>}
           >
-            <p>
-              <b>Price</b>:{' '}
-              {exchangeCurrency({
-                have: Currency.UAH,
-                want: chosenCurrency,
-                amount: product.price,
-              })}{' '}
-              {chosenCurrency}
-            </p>
+            <Paragraph>
+              <Text strong>Price: </Text>
+              <Text>
+                {`${exchangeCurrency({
+                  have: Currency.UAH,
+                  want: chosenCurrency,
+                  amount: product.price,
+                })} 
+                ${chosenCurrency}`}
+              </Text>
+            </Paragraph>
           </Card>
         </Col>
       </>

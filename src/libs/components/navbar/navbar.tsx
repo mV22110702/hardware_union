@@ -6,9 +6,9 @@ import { getMenuItem } from '~/libs/helpers/helpers';
 import styles from './styles.module.scss';
 import { CurrencyNavbarDropdown } from '~/libs/components/currency-navbar-dropdown/currency-navbar-dropdown';
 import { useAuthContext } from '~/libs/hooks/use-auth-context.hook.tsx';
-import { Button } from 'antd';
 import { useHistoryModalContext } from '~/libs/hooks/use-history-modal-context.hook.tsx';
 import { useSignInModalContext } from '~/libs/hooks/use-sign-in-modal-context.hook.tsx';
+import {NavbarButton} from "~/libs/components/navbar-button/navbar-button.tsx";
 
 const Navbar: React.FC = () => {
   const authContext = useAuthContext();
@@ -38,17 +38,17 @@ const Navbar: React.FC = () => {
     ),
     getMenuItem({
       label: (
-        <Button type={'link'} onClick={handleClickAuthButton}>
+        <NavbarButton onClick={handleClickAuthButton}>
             {authContext?.auth ? 'Sign out' : 'Sign in'}
-        </Button>
+        </NavbarButton>
       ),
       key: 'auth',
     }),
     getMenuItem({
       label: (
-        <Button type={'link'} onClick={handlePressHistory}>
+        <NavbarButton onClick={handlePressHistory}>
           History
-        </Button>
+        </NavbarButton>
       ),
       key: 'history',
     }),
