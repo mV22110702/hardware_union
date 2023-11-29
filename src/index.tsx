@@ -8,6 +8,7 @@ import { ChosenProductsProvider } from '~/libs/components/chosen-products-provid
 import { ChosenCurrencyProvider } from '~/libs/components/chosen-currency-provider/chosen-currency-provider';
 import { HistoryLogContextProvider } from '~/libs/components/history-log-context-provider/history-log-context-provider.tsx';
 import { ModalProviders } from '~/libs/components/modal-providers/modal-providers.tsx';
+import { ProductsProvider } from '~/libs/components/products-provider.tsx';
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
 );
@@ -15,16 +16,18 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <ToastContainer />
-    <ChosenCurrencyProvider>
-      <ChosenProductsProvider>
-        <AuthContextProvider>
-          <HistoryLogContextProvider>
-            <ModalProviders>
-              <Router />
-            </ModalProviders>
-          </HistoryLogContextProvider>
-        </AuthContextProvider>
-      </ChosenProductsProvider>
-    </ChosenCurrencyProvider>
+    <ProductsProvider>
+      <ChosenCurrencyProvider>
+        <ChosenProductsProvider>
+          <AuthContextProvider>
+            <HistoryLogContextProvider>
+              <ModalProviders>
+                <Router />
+              </ModalProviders>
+            </HistoryLogContextProvider>
+          </AuthContextProvider>
+        </ChosenProductsProvider>
+      </ChosenCurrencyProvider>
+    </ProductsProvider>
   </React.StrictMode>,
 );

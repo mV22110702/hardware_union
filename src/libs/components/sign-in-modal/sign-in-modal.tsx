@@ -13,7 +13,7 @@ export type Properties = {
   setIsOpen: (isOpen: boolean) => void;
   handleSubmit: (formData: SignInFormData) => Promise<void>;
 };
-export const AuthModal: FC<Properties> = ({
+export const SignInModal: FC<Properties> = ({
   isOpen,
   setIsOpen,
   handleSubmit,

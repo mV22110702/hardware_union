@@ -8,13 +8,15 @@ import { CurrencyNavbarDropdown } from '~/libs/components/currency-navbar-dropdo
 import { useAuthContext } from '~/libs/hooks/use-auth-context.hook.tsx';
 import { useHistoryModalContext } from '~/libs/hooks/use-history-modal-context.hook.tsx';
 import { useSignInModalContext } from '~/libs/hooks/use-sign-in-modal-context.hook.tsx';
-import {NavbarButton} from "~/libs/components/navbar-button/navbar-button.tsx";
+import { NavbarButton } from '~/libs/components/navbar-button/navbar-button.tsx';
+import { useSignUpModalContext } from '~/libs/hooks/use-sign-up-modal-context.hook.tsx';
 
 const Navbar: React.FC = () => {
   const authContext = useAuthContext();
   const historyModalContext = useHistoryModalContext();
 
   const signInModalContext = useSignInModalContext();
+  const signUpModalContext = useSignUpModalContext();
 
   const links = [{ to: AppRoute.ROOT, name: 'Home' }];
 
@@ -22,12 +24,19 @@ const Navbar: React.FC = () => {
     historyModalContext.setShowHistoryModal(true);
   }, [historyModalContext]);
 
-  const handleClickAuthButton = useCallback(()=>{
-      if(authContext.auth){
-          return authContext.setAuth(false);
-      }
-      signInModalContext.setIsSignInModalOpen(true);
-  },[authContext]);
+  const handleClickSignInButton = useCallback(() => {
+    if (authContext.auth) {
+      return authContext.setAuth(false);
+    }
+    signInModalContext.setIsSignInModalOpen(true);
+  }, [authContext]);
+
+    const handleClickSignUpButton = useCallback(() => {
+        if (authContext.auth) {
+            return authContext.setAuth(false);
+        }
+        signUpModalContext.setIsSignUpModalOpen(true);
+    }, [authContext]);
 
   const menuItems = [
     ...links.map(({ to, name }) =>
@@ -38,18 +47,15 @@ const Navbar: React.FC = () => {
     ),
     getMenuItem({
       label: (
-        <NavbarButton onClick={handleClickAuthButton}>
-            {authContext?.auth ? 'Sign out' : 'Sign in'}
+        <NavbarButton onClick={handleClickSignInButton}>
+          {authContext?.auth ? 'Sign out' : 'Sign in'}
         </NavbarButton>
       ),
-      key: 'auth',
+      key: 'sign-in',
     }),
+
     getMenuItem({
-      label: (
-        <NavbarButton onClick={handlePressHistory}>
-          History
-        </NavbarButton>
-      ),
+      label: <NavbarButton onClick={handlePressHistory}>History</NavbarButton>,
       key: 'history',
     }),
     getMenuItem({
@@ -58,6 +64,19 @@ const Navbar: React.FC = () => {
       style: { marginLeft: 'auto' },
     }),
   ];
+
+  if (!authContext?.auth) {
+    menuItems.splice(links.length+1,0,
+      getMenuItem({
+        label: (
+          <NavbarButton onClick={handleClickSignUpButton}>
+            {'Sign up'}
+          </NavbarButton>
+        ),
+        key: 'sign-up',
+      }),
+    );
+  }
 
   return (
     <div className={styles.navbarMenuContainer}>

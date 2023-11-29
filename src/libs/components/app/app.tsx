@@ -9,10 +9,13 @@ import { useHistoryModalContext } from '~/libs/hooks/use-history-modal-context.h
 import { CSSTransition } from 'react-transition-group';
 import { useCallback, useRef } from 'react';
 import styles from '../history-modal/styles.module.scss';
-import { AuthModal } from '~/libs/components/auth-modal/auth-modal.tsx';
 import { useSignInModalContext } from '~/libs/hooks/use-sign-in-modal-context.hook.tsx';
+import {SignUpModal} from "~/libs/components/sign-up-modal/sign-up-modal.tsx";
+import {SignInModal} from "~/libs/components/sign-in-modal/sign-in-modal.tsx";
+import {useSignUpModalContext} from "~/libs/hooks/use-sign-up-modal-context.hook.tsx";
 function App() {
   const signInModalContext = useSignInModalContext();
+  const signUpModalContext = useSignUpModalContext();
   const historyModalContext = useHistoryModalContext();
   const modalRef = useRef<HTMLDivElement | null>(null);
 
@@ -41,11 +44,16 @@ function App() {
       >
         <HistoryModal onClose={handleCloseHistoryModal} ref={modalRef} />
       </CSSTransition>
-      <AuthModal
+      <SignInModal
         setIsOpen={signInModalContext.setIsSignInModalOpen}
         handleSubmit={signInModalContext.handleSubmitSignInForm}
         isOpen={signInModalContext.isSignInModalOpen}
       />
+        <SignUpModal
+            setIsOpen={signUpModalContext.setIsSignUpModalOpen}
+            handleSubmit={signUpModalContext.handleSubmitSignUpForm}
+            isOpen={signUpModalContext.isSignUpModalOpen}
+        />
     </AntLayout>
   );
 }

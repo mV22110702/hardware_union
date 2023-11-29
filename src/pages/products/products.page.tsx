@@ -8,9 +8,16 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useChosenProductsContext } from '~/libs/hooks/use-chosen-products-context.hook.tsx';
 import { usePagination } from '~/libs/hooks/use-pagination.hook.tsx';
 import { ProductEntityWithCategoryT } from '~/libs/slices/products/types/product-entity-with-category.type.ts';
-import { productsMock } from '~/libs/slices/products/mocks/products.mock.ts';
 import { AppRoute } from '~/libs/enums/enums.ts';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import { Fab, IconButton } from '@mui/material';
+import { PlusOutlined } from '@ant-design/icons';
+import { useAddProductModalContext } from '~/libs/hooks/use-add-product-modal-context.hook.tsx';
+import {
+  AddProductFormData,
+  AddProductModal,
+} from '~/libs/components/add-product-modal/add-product-modal.tsx';
+import { useProductsContext } from '~/libs/hooks/use-products-context.hook.tsx';
 
 export type ProductWithRef = {
   product: ProductEntityWithCategoryT;
@@ -26,6 +33,7 @@ const ProductsPage: React.FC = () => {
     chosenProductsContext.chosenProducts.length !== 0;
   const { pagination, paginateSlice, resetPagination, handlePaginationChange } =
     usePagination();
+  const { products: productsSlice } = useProductsContext();
 
   useEffect(() => {
     resetPagination();
@@ -38,7 +46,7 @@ const ProductsPage: React.FC = () => {
   useEffect(() => {
     if (params.categoryId === undefined || params.categoryId === '') {
       setProducts(
-        productsMock.map((product) => ({
+        productsSlice.map((product) => ({
           product,
           nodeRef: createRef<HTMLDivElement>(),
         })),
@@ -50,13 +58,13 @@ const ProductsPage: React.FC = () => {
       navigate(AppRoute.ROOT);
     }
     const filteredProductsMock = categoryId
-      ? productsMock
+      ? productsSlice
           .map((product) => ({
             product,
             nodeRef: createRef<HTMLDivElement>(),
           }))
           .filter((productObj) => productObj.product.category.id === categoryId)
-      : productsMock.map((product) => ({
+      : productsSlice.map((product) => ({
           product,
           nodeRef: createRef<HTMLDivElement>(),
         }));
@@ -64,6 +72,8 @@ const ProductsPage: React.FC = () => {
     const paginatedProductsMock = paginateSlice(filteredProductsMock);
     setProducts(paginatedProductsMock);
   }, [navigate, paginateSlice, params.categoryId]);
+
+  const addProductModalContext = useAddProductModalContext();
 
   const productCards = products.map((product) => {
     const isChecked = !!chosenProductsContext.chosenProducts.find(
@@ -122,6 +132,22 @@ const ProductsPage: React.FC = () => {
           total={totalProductsCount}
         />
       </Row>
+      <Fab
+        color={'primary'}
+        sx={{ position: 'fixed', right: '30px', bottom: '30px' }}
+      >
+        <IconButton
+          sx={{ color: 'white' }}
+          onClick={() => addProductModalContext.setIsAddProductModalOpen(true)}
+        >
+          <PlusOutlined />
+        </IconButton>
+      </Fab>
+      <AddProductModal
+        setIsOpen={addProductModalContext.setIsAddProductModalOpen}
+        handleSubmit={addProductModalContext.handleSubmitAddProductForm}
+        isOpen={addProductModalContext.isAddProductModalOpen}
+      />
     </Content>
   );
 };
