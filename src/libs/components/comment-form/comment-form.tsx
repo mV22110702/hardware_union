@@ -1,63 +1,57 @@
-import { Button, Form, Input } from 'antd';
-import { ChangeEventHandler } from 'react';
-import { useForm } from 'antd/es/form/Form';
+import React from 'react';
+import { Box, Button, Stack, Typography } from '@mui/material';
+import {Form, Formik} from 'formik';
+import { MuiFormikTextField } from '~/libs/components/sign-up-modal/sign-up-modal.tsx';
+import * as yup from 'yup';
 
 type CommentFormData = {
   username: string;
   title: string;
+  content: string;
 };
 
 type Properties = {
   handleFinish: (formData: CommentFormData) => void;
-  handleTextAreaChange: ChangeEventHandler<HTMLTextAreaElement>;
-  commentContent: string;
 };
 
-const CommentForm: React.FC<Properties> = ({
-  handleFinish,
-  commentContent,
-  handleTextAreaChange,
-}) => {
-  const [form] = useForm<CommentFormData>();
+const CommentForm: React.FC<Properties> = ({ handleFinish }) => {
   return (
-    <Form
-      onFinish={handleFinish}
-      form={form}
-      layout={'vertical'}
-      requiredMark={true}
+    <Formik<CommentFormData>
+      initialValues={{ username: '', content: '', title: '' }}
+      validationSchema={yup.object({
+        username: yup
+          .string()
+          .required('Required')
+          .min(3, 'Minimum length: 3 symbols'),
+        title: yup.string().required('Required'),
+        content: yup.string().required('Required'),
+      })}
+      onSubmit={(formData,formikHelpers) => {
+        console.log('finish');
+        handleFinish(formData);
+        formikHelpers.resetForm()
+      }}
     >
-      <Form.Item
-        label="Username"
-        name="username"
-        rules={[{ required: true, message: 'Username required' }]}
-      >
-        <Input placeholder="Enter your username" />
-      </Form.Item>
-      <Form.Item
-        label="Title"
-        name="title"
-        rules={[{ required: true, message: 'Title required' }]}
-      >
-        <Input placeholder="Enter comment title" />
-      </Form.Item>
-      <Form.Item
-        rules={[{ required: true, message: 'Comment cannot be empty' }]}
-        label="Comment message"
-        name="content"
-        required
-      >
-        <Input.TextArea
-          value={commentContent}
-          rows={4}
-          onChange={handleTextAreaChange}
-        />
-      </Form.Item>
-      <Form.Item>
-        <Button type="primary" htmlType="submit">
-          Submit
-        </Button>
-      </Form.Item>
-    </Form>
+      <Form>
+        <Stack
+          sx={{ m: 3, borderWidth: 1, p: 3, gap: 3 }}
+          component={'fieldset'}
+        >
+          <Box>
+            <MuiFormikTextField name={'username'} />
+          </Box>
+          <Box>
+            <MuiFormikTextField name={'title'} />
+          </Box>
+          <Box>
+            <MuiFormikTextField name={'content'} multiline rows={5} />
+          </Box>
+          <Button type={'submit'} color={'primary'}>
+            Submit
+          </Button>
+        </Stack>
+      </Form>
+    </Formik>
   );
 };
 

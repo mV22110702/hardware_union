@@ -76,8 +76,6 @@ const ProductPage: React.FC = () => {
 
   const {
     comments,
-    commentContent,
-    handleCommentContentChange,
     handleCommentSubmit,
   } = useComments();
 
@@ -148,9 +146,7 @@ const ProductPage: React.FC = () => {
       <Row>
         <Col flex={1}>
           <CommentForm
-            commentContent={commentContent}
             handleFinish={handleCommentSubmit}
-            handleTextAreaChange={handleCommentContentChange}
           />
         </Col>
       </Row>

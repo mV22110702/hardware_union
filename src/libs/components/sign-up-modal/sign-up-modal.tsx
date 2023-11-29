@@ -107,13 +107,17 @@ export const SignUpModal: FC<Properties> = ({
 export const MuiFormikTextField: FC<{
   name: string;
   type?: ComponentProps<typeof TextField>['type'];
-}> = ({ name, type = 'text' }) => {
+  multiline?: ComponentProps<typeof TextField>['multiline'];
+  rows?: ComponentProps<typeof TextField>['rows'];
+}> = ({ name, type = 'text', multiline,rows }) => {
   const [field, meta] = useField({ name, type });
   return (
     <TextField
       fullWidth
       label={capitalize(name)}
       type={type}
+      multiline={multiline}
+      rows={rows}
       {...field}
       error={meta.touched && Boolean(meta.error)}
       helperText={meta.touched && meta.error}
