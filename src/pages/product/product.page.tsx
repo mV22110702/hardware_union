@@ -24,7 +24,7 @@ import { AppRoute, Currency } from '~/libs/enums/enums.ts';
 import { useChosenProductsContext } from '~/libs/hooks/use-chosen-products-context.hook.tsx';
 import { useChosenCurrencyContext } from '~/libs/hooks/use-chosen-currency-context.hook.tsx';
 import { useComments } from '~/libs/hooks/use-comments.hook.tsx';
-import { productsMock } from '~/libs/slices/products/mocks/products.mock.ts';
+import {useProductsContext} from "~/libs/hooks/use-products-context.hook.tsx";
 
 const { Paragraph, Text } = Typography;
 
@@ -36,6 +36,7 @@ const ProductPage: React.FC = () => {
   const [product, setProduct] = useState<ProductEntityWithCategoryT | null>(
     null,
   );
+    const { products: productsSlice } = useProductsContext();
 
   useLayoutEffect(() => {
     if (!params.productId) {
@@ -47,7 +48,7 @@ const ProductPage: React.FC = () => {
       setIsError(true);
       return;
     }
-    const product = productsMock.find((product) => product.id === productId);
+    const product = productsSlice.find((product) => product.id === productId);
     if (!product) {
       setIsError(true);
       return;
@@ -72,7 +73,7 @@ const ProductPage: React.FC = () => {
           }),
           getBreadcrumbItem({ title: product.name }),
         ];
-  }, [product?.name, product?.category]);
+  }, [product?.name, product?.category,productsSlice]);
 
   const {
     comments,

@@ -71,14 +71,27 @@ export const ModalProviders: FC<PropsWithChildren> = ({ children }) => {
   const handleSubmitAddProductForm = useCallback(
     async ({ categoryId, ...formData }: AddProductFormData) => {
       setProducts((prev) => {
-        const id = prev.slice(-1)[0].id + 1;
+        const id =
+          prev
+            .slice(-1)[0].id + 1;
         const category = Object.values(categoriesMock)[categoryId];
-        return [...prev, { ...formData, id, category }];
+        console.log('res');
+        console.log({ ...formData, id, category });
+        console.log(prev[0]);
+        return [
+          ...prev,
+          {
+            ...formData,
+            id,
+            category,
+            price: Number.parseInt(formData.price.toString()),
+          },
+        ];
       });
 
       await setTimeout(() => {}, 1000);
     },
-    [authContext, setIsAddProductModalOpen],
+    [setProducts, setIsAddProductModalOpen],
   );
 
   return (

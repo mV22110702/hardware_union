@@ -34,8 +34,9 @@ const ProductsPage: React.FC = () => {
   const { pagination, paginateSlice, resetPagination, handlePaginationChange } =
     usePagination();
   const { products: productsSlice } = useProductsContext();
+    console.log(productsSlice.filter(product => product.category.name === 'SSD'));
 
-  useEffect(() => {
+    useEffect(() => {
     resetPagination();
   }, [params.categoryId, resetPagination]);
   const handleCheck = useMemo(
@@ -71,7 +72,7 @@ const ProductsPage: React.FC = () => {
     setTotalProductsCount(filteredProductsMock.length);
     const paginatedProductsMock = paginateSlice(filteredProductsMock);
     setProducts(paginatedProductsMock);
-  }, [navigate, paginateSlice, params.categoryId]);
+  }, [navigate, paginateSlice, params.categoryId,productsSlice]);
 
   const addProductModalContext = useAddProductModalContext();
 

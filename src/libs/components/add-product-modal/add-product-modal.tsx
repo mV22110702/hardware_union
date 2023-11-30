@@ -117,8 +117,8 @@ export const CategorySelect: FC<{ name: string }> = ({ name }) => {
       <Select
         labelId="category-label"
         id="demo-simple-select"
+        label={'Category'}
         value={field.value}
-        label="Age"
         onChange={(event) => {
           helper.setValue(Number.parseInt(event.target.value), true);
         }}
@@ -133,19 +133,5 @@ export const CategorySelect: FC<{ name: string }> = ({ name }) => {
         {meta.touched && meta.error}
       </FormHelperText>
     </FormControl>
-  );
-};
-
-export const PasswordField: FC<{ name: string }> = ({ name }) => {
-  const [field, meta] = useField({ name, type: 'password' });
-  return (
-    <TextField
-      fullWidth
-      id="password"
-      label="Password"
-      {...field}
-      error={meta.touched && Boolean(meta.error)}
-      helperText={meta.touched && meta.error}
-    />
   );
 };
