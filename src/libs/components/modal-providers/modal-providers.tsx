@@ -7,12 +7,13 @@ import {
   useCallback,
   useState,
 } from 'react';
-import { useAuthContext } from '~/libs/hooks/use-auth-context.hook.tsx';
 import { SignUpFormData } from '~/libs/components/sign-up-modal/sign-up-modal.tsx';
 import { SignInFormData } from '~/libs/components/sign-in-modal/sign-in-modal.tsx';
 import { AddProductFormData } from '~/libs/components/add-product-modal/add-product-modal.tsx';
-import { useProductsContext } from '~/libs/hooks/use-products-context.hook.tsx';
-import { categoriesMock } from '~/libs/slices/categories/mocks/categories.mock.ts';
+import { useAppDispatch } from '~/libs/slices/store.ts';
+import { signIn, signUp } from '~/libs/slices/auth/authSlice.ts';
+import { v4 } from 'uuid';
+import { addOne } from '~/libs/slices/products/productsSlice.ts';
 
 export const HistoryModalContext = createContext<{
   showHistoryModal: boolean;
@@ -38,60 +39,39 @@ export const AddProductModalContext = createContext<{
 } | null>(null);
 
 export const ModalProviders: FC<PropsWithChildren> = ({ children }) => {
-  const authContext = useAuthContext();
-
+  const dispatch = useAppDispatch();
   const [showHistoryModal, setShowHistoryModal] = useState(false);
 
   const [isSignInModalOpen, setIsSignInModalOpen] = useState(false);
 
   const handleSubmitSignInForm = useCallback(
     async (formData: SignInFormData) => {
-      authContext.setAuth(true);
+      dispatch(signIn({ token: v4() }));
       alert(`Sign in success. Hello, ${formData.username}`);
       await setTimeout(() => {}, 1000);
     },
-    [authContext, setIsSignInModalOpen],
+    [dispatch],
   );
 
   const [isSignUpModalOpen, setIsSignUpModalOpen] = useState(false);
 
   const handleSubmitSignUpForm = useCallback(
     async (formData: SignUpFormData) => {
-      authContext.setAuth(true);
+      dispatch(signUp({ token: v4() }));
       alert(`Sign up success. Hello, ${formData.email}`);
       await setTimeout(() => {}, 1000);
     },
-    [authContext, setIsSignUpModalOpen],
+    [dispatch],
   );
 
   const [isAddProductModalOpen, setIsAddProductModalOpen] = useState(false);
 
-  const { setProducts } = useProductsContext();
-
   const handleSubmitAddProductForm = useCallback(
-    async ({ categoryId, ...formData }: AddProductFormData) => {
-      setProducts((prev) => {
-        const id =
-          prev
-            .slice(-1)[0].id + 1;
-        const category = Object.values(categoriesMock)[categoryId];
-        console.log('res');
-        console.log({ ...formData, id, category });
-        console.log(prev[0]);
-        return [
-          ...prev,
-          {
-            ...formData,
-            id,
-            category,
-            price: Number.parseInt(formData.price.toString()),
-          },
-        ];
-      });
-
+    async (formData: AddProductFormData) => {
+      dispatch(addOne(formData));
       await setTimeout(() => {}, 1000);
     },
-    [setProducts, setIsAddProductModalOpen],
+    [dispatch],
   );
 
   return (

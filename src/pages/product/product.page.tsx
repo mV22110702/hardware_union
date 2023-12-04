@@ -15,28 +15,32 @@ import { getValidClassNames } from '~/libs/helpers/get-valid-class-names.helper'
 import styles from './styles.module.scss';
 import { categoryToImg } from '~/libs/slices/categories/maps/category-to-img.map';
 import Title from 'antd/es/typography/Title';
-import { useLayoutEffect, useMemo, useState } from 'react';
+import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
 import { exchangeCurrency, getBreadcrumbItem } from '~/libs/helpers/helpers';
 import { generatePath, Navigate, NavLink, useParams } from 'react-router-dom';
-import { handleChooseProductCard } from '~/libs/components/product-card/libs/helpers/handle-choose-product-card.helper';
 import { CommentForm } from '~/libs/components/comment-form/comment-form.tsx';
 import { AppRoute, Currency } from '~/libs/enums/enums.ts';
-import { useChosenProductsContext } from '~/libs/hooks/use-chosen-products-context.hook.tsx';
-import { useChosenCurrencyContext } from '~/libs/hooks/use-chosen-currency-context.hook.tsx';
 import { useComments } from '~/libs/hooks/use-comments.hook.tsx';
-import {useProductsContext} from "~/libs/hooks/use-products-context.hook.tsx";
+import { useAppDispatch, useAppSelector } from '~/libs/slices/store.ts';
+import { selectChosenCurrency } from '~/libs/slices/currency/currencySlice.ts';
+import {
+  addChosenOne,
+  removeChosenOne,
+  selectChosenOne,
+  selectProducts,
+} from '~/libs/slices/products/productsSlice.ts';
 
 const { Paragraph, Text } = Typography;
 
 const ProductPage: React.FC = () => {
-  const chosenProductsContext = useChosenProductsContext();
-  const { chosenCurrency } = useChosenCurrencyContext();
+  const chosenCurrency = useAppSelector(selectChosenCurrency);
   const params = useParams<{ productId: string }>();
   const [isError, setIsError] = useState<boolean>(false);
   const [product, setProduct] = useState<ProductEntityWithCategoryT | null>(
     null,
   );
-    const { products: productsSlice } = useProductsContext();
+  const products = useAppSelector(selectProducts);
+  const dispatch = useAppDispatch();
 
   useLayoutEffect(() => {
     if (!params.productId) {
@@ -48,7 +52,7 @@ const ProductPage: React.FC = () => {
       setIsError(true);
       return;
     }
-    const product = productsSlice.find((product) => product.id === productId);
+    const product = products.find((product) => product.id === productId);
     if (!product) {
       setIsError(true);
       return;
@@ -73,20 +77,21 @@ const ProductPage: React.FC = () => {
           }),
           getBreadcrumbItem({ title: product.name }),
         ];
-  }, [product?.name, product?.category,productsSlice]);
+  }, [product?.name, product?.category, products]);
 
-  const {
-    comments,
-    handleCommentSubmit,
-  } = useComments();
+  const { comments, handleCommentSubmit } = useComments();
 
-  const isChecked = !!chosenProductsContext.chosenProducts.find(
-    (checkedProduct) => checkedProduct.id === product?.id,
-  );
+  const isChecked = !!useAppSelector(selectChosenOne(product?.id));
 
-  const handleCheck = useMemo(
-    () => handleChooseProductCard(chosenProductsContext.setChosenProducts),
-    [chosenProductsContext.setChosenProducts],
+  const handleCheck = useCallback(
+    ({ id, isChecked }: { id: number; isChecked: boolean }) => {
+      if (isChecked) {
+        dispatch(removeChosenOne({ id }));
+      } else {
+        dispatch(addChosenOne({ id }));
+      }
+    },
+    [dispatch],
   );
 
   const productInfo =
@@ -114,7 +119,13 @@ const ProductPage: React.FC = () => {
                 }
               />
             }
-            title={<Text copyable={{text:window.location.href, tooltips:'Copy link'}}>{product.name}</Text>}
+            title={
+              <Text
+                copyable={{ text: window.location.href, tooltips: 'Copy link' }}
+              >
+                {product.name}
+              </Text>
+            }
           >
             <Paragraph>
               <Text strong>Price: </Text>
@@ -146,9 +157,7 @@ const ProductPage: React.FC = () => {
       </Row>
       <Row>
         <Col flex={1}>
-          <CommentForm
-            handleFinish={handleCommentSubmit}
-          />
+          <CommentForm handleFinish={handleCommentSubmit} />
         </Col>
       </Row>
       <Row>

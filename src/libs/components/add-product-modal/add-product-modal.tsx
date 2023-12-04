@@ -1,9 +1,7 @@
 import { Modal } from 'antd';
-import React, { FC } from 'react';
+import { FC } from 'react';
 import {
   Form,
-  Field,
-  FieldProps,
   Formik,
   useField,
 } from 'formik';
@@ -11,7 +9,6 @@ import * as yup from 'yup';
 import {
   Box,
   Stack,
-  TextField,
   Button,
   CircularProgress,
   InputLabel,

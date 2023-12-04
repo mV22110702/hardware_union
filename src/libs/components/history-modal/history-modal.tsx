@@ -1,16 +1,17 @@
-import { useHistoryLogContext } from '~/libs/hooks/use-history-log-context.hook.tsx';
 import { forwardRef, useMemo } from 'react';
 import { produce } from 'immer';
 import { CloseOutlined } from '@ant-design/icons';
 import styles from './styles.module.scss';
 import Title from 'antd/es/typography/Title';
 import { Button } from 'antd';
+import { useAppSelector } from '~/libs/slices/store.ts';
+import { selectHistoryLog } from '~/libs/slices/history/historySlice.ts';
 type Properties = {
   onClose: () => void;
 };
 export const HistoryModal = forwardRef<HTMLDivElement, Properties>(
   ({ onClose }, ref) => {
-    const [historyLog] = useHistoryLogContext();
+    const historyLog = useAppSelector(selectHistoryLog);
     console.log(historyLog);
     const reversedHistoryForStack = useMemo(() => {
       return produce(historyLog, (draft) => draft.reverse());
@@ -20,16 +21,10 @@ export const HistoryModal = forwardRef<HTMLDivElement, Properties>(
         <div className={styles.modalContainer}>
           <div className={styles.modalHeader}>
             <div className={styles.modalTitle}>
-              <Title level={3} >
-                History stack
-              </Title>
+              <Title level={3}>History stack</Title>
             </div>
             <div className={styles.modalCloseIcon}>
-              <Button
-                type={'link'}
-                onClick={onClose}
-
-              >
+              <Button type={'link'} onClick={onClose}>
                 <CloseOutlined />
               </Button>
             </div>

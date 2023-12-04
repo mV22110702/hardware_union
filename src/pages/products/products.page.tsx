@@ -2,10 +2,14 @@ import { Col, Pagination, Row, Tag } from 'antd';
 import styles from './styles.module.scss';
 import { ProductCard } from '~/libs/components/product-card/product-card';
 import { Content } from '../../libs/components/content/content';
-import { createRef, RefObject, useEffect, useMemo, useState } from 'react';
-import { handleChooseProductCard } from '~/libs/components/product-card/libs/helpers/handle-choose-product-card.helper';
+import {
+  createRef,
+  RefObject,
+  useCallback,
+  useEffect,
+  useState,
+} from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useChosenProductsContext } from '~/libs/hooks/use-chosen-products-context.hook.tsx';
 import { usePagination } from '~/libs/hooks/use-pagination.hook.tsx';
 import { ProductEntityWithCategoryT } from '~/libs/slices/products/types/product-entity-with-category.type.ts';
 import { AppRoute } from '~/libs/enums/enums.ts';
@@ -13,11 +17,15 @@ import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import { Fab, IconButton } from '@mui/material';
 import { PlusOutlined } from '@ant-design/icons';
 import { useAddProductModalContext } from '~/libs/hooks/use-add-product-modal-context.hook.tsx';
+import { AddProductModal } from '~/libs/components/add-product-modal/add-product-modal.tsx';
+import { useAppDispatch, useAppSelector } from '~/libs/slices/store.ts';
 import {
-  AddProductFormData,
-  AddProductModal,
-} from '~/libs/components/add-product-modal/add-product-modal.tsx';
-import { useProductsContext } from '~/libs/hooks/use-products-context.hook.tsx';
+  addChosenOne,
+  clearChosenProducts,
+  removeChosenOne,
+  selectChosenProducts,
+  selectProducts,
+} from '~/libs/slices/products/productsSlice.ts';
 
 export type ProductWithRef = {
   product: ProductEntityWithCategoryT;
@@ -28,26 +36,31 @@ const ProductsPage: React.FC = () => {
   const navigate = useNavigate();
   const [totalProductsCount, setTotalProductsCount] = useState<number>(0);
   const [products, setProducts] = useState<ProductWithRef[]>([]);
-  const chosenProductsContext = useChosenProductsContext();
-  const areAnyCheckedProducts =
-    chosenProductsContext.chosenProducts.length !== 0;
+  const areAnyCheckedProducts = !!useAppSelector(selectChosenProducts).length;
   const { pagination, paginateSlice, resetPagination, handlePaginationChange } =
     usePagination();
-  const { products: productsSlice } = useProductsContext();
-    console.log(productsSlice.filter(product => product.category.name === 'SSD'));
-
-    useEffect(() => {
+  const rawProducts = useAppSelector(selectProducts);
+  const chosenProducts = useAppSelector(selectChosenProducts);
+  console.log(rawProducts.filter((product) => product.category.name === 'SSD'));
+  const dispatch = useAppDispatch();
+  useEffect(() => {
     resetPagination();
   }, [params.categoryId, resetPagination]);
-  const handleCheck = useMemo(
-    () => handleChooseProductCard(chosenProductsContext.setChosenProducts),
-    [chosenProductsContext.setChosenProducts],
+  const handleCheck = useCallback(
+    ({ id, isChecked }: { id: number; isChecked: boolean }) => {
+      if (isChecked) {
+        dispatch(removeChosenOne({ id }));
+      } else {
+        dispatch(addChosenOne({ id }));
+      }
+    },
+    [dispatch],
   );
 
   useEffect(() => {
     if (params.categoryId === undefined || params.categoryId === '') {
       setProducts(
-        productsSlice.map((product) => ({
+        rawProducts.map((product) => ({
           product,
           nodeRef: createRef<HTMLDivElement>(),
         })),
@@ -59,26 +72,26 @@ const ProductsPage: React.FC = () => {
       navigate(AppRoute.ROOT);
     }
     const filteredProductsMock = categoryId
-      ? productsSlice
+      ? rawProducts
           .map((product) => ({
             product,
             nodeRef: createRef<HTMLDivElement>(),
           }))
           .filter((productObj) => productObj.product.category.id === categoryId)
-      : productsSlice.map((product) => ({
+      : rawProducts.map((product) => ({
           product,
           nodeRef: createRef<HTMLDivElement>(),
         }));
     setTotalProductsCount(filteredProductsMock.length);
     const paginatedProductsMock = paginateSlice(filteredProductsMock);
     setProducts(paginatedProductsMock);
-  }, [navigate, paginateSlice, params.categoryId,productsSlice]);
+  }, [navigate, paginateSlice, params.categoryId, rawProducts]);
 
   const addProductModalContext = useAddProductModalContext();
 
   const productCards = products.map((product) => {
-    const isChecked = !!chosenProductsContext.chosenProducts.find(
-      (checkedProduct) => checkedProduct.id === product.product.id,
+    const isChecked = !!chosenProducts.find(
+      (chosenProduct) => chosenProduct.id === product.product.id,
     );
     return (
       <CSSTransition
@@ -111,9 +124,9 @@ const ProductsPage: React.FC = () => {
           style={{ margin: 30, padding: 10, fontSize: 15 }}
           color="geekblue"
           closable
-          onClose={() => chosenProductsContext.setChosenProducts([])}
+          onClose={() => dispatch(clearChosenProducts())}
         >
-          {chosenProductsContext.chosenProducts.length} Chosen
+          {chosenProducts.length} Chosen
         </Tag>
       )}
       <Row
