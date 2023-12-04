@@ -122,7 +122,7 @@ export const CategorySelect: FC<{ name: string }> = ({ name }) => {
       >
         {Object.values(categoriesMock).map(
           ({ name: categoryName }, categoryId) => {
-            return <MenuItem value={categoryId}>{categoryName}</MenuItem>;
+            return <MenuItem key={categoryId} value={categoryId}>{categoryName}</MenuItem>;
           },
         )}
       </Select>

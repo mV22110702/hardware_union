@@ -4,13 +4,14 @@ import { ChosenProduct } from '~/pages/products/libs/types/checked-product.type.
 import { RootState } from '~/libs/slices/store.ts';
 import { AddProductFormData } from '~/libs/components/add-product-modal/add-product-modal.tsx';
 import { categoriesMock } from '~/libs/slices/categories/mocks/categories.mock.ts';
+import {productsMock} from "~/libs/slices/products/mocks/products.mock.ts";
 
 export type ProductsSlice = {
   products: ProductEntityWithCategoryT[];
   chosenProducts: ChosenProduct[];
 };
 const initialState: ProductsSlice = {
-  products: [],
+  products: productsMock,
   chosenProducts: [],
 };
 export const productsSlice = createSlice({

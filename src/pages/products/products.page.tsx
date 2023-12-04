@@ -14,7 +14,7 @@ import { usePagination } from '~/libs/hooks/use-pagination.hook.tsx';
 import { ProductEntityWithCategoryT } from '~/libs/slices/products/types/product-entity-with-category.type.ts';
 import { AppRoute } from '~/libs/enums/enums.ts';
 import { CSSTransition, TransitionGroup } from 'react-transition-group';
-import { Fab, IconButton } from '@mui/material';
+import { Fab } from '@mui/material';
 import { PlusOutlined } from '@ant-design/icons';
 import { useAddProductModalContext } from '~/libs/hooks/use-add-product-modal-context.hook.tsx';
 import { AddProductModal } from '~/libs/components/add-product-modal/add-product-modal.tsx';
@@ -41,7 +41,6 @@ const ProductsPage: React.FC = () => {
     usePagination();
   const rawProducts = useAppSelector(selectProducts);
   const chosenProducts = useAppSelector(selectChosenProducts);
-  console.log(rawProducts.filter((product) => product.category.name === 'SSD'));
   const dispatch = useAppDispatch();
   useEffect(() => {
     resetPagination();
@@ -95,6 +94,7 @@ const ProductsPage: React.FC = () => {
     );
     return (
       <CSSTransition
+          key={product.product.id}
         nodeRef={product.nodeRef}
         timeout={500}
         classNames={{
@@ -104,7 +104,7 @@ const ProductsPage: React.FC = () => {
           exitActive: styles.itemExitActive,
         }}
       >
-        <Col key={product.product.id} ref={product.nodeRef}>
+        <Col ref={product.nodeRef}>
           <ProductCard
             isChecked={isChecked}
             handleCheck={handleCheck}
@@ -149,13 +149,9 @@ const ProductsPage: React.FC = () => {
       <Fab
         color={'primary'}
         sx={{ position: 'fixed', right: '30px', bottom: '30px' }}
+        onClick={() => addProductModalContext.setIsAddProductModalOpen(true)}
       >
-        <IconButton
-          sx={{ color: 'white' }}
-          onClick={() => addProductModalContext.setIsAddProductModalOpen(true)}
-        >
           <PlusOutlined />
-        </IconButton>
       </Fab>
       <AddProductModal
         setIsOpen={addProductModalContext.setIsAddProductModalOpen}

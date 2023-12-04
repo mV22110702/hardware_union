@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Button, Stack, Typography } from '@mui/material';
+import { Box, Button, Stack } from '@mui/material';
 import {Form, Formik} from 'formik';
 import { MuiFormikTextField } from '~/libs/components/sign-up-modal/sign-up-modal.tsx';
 import * as yup from 'yup';

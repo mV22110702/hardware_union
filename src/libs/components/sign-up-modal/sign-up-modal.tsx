@@ -1,6 +1,6 @@
 import { Modal } from 'antd';
-import React, { ComponentProps, FC } from 'react';
-import { Form, Field, FieldProps, Formik, useField } from 'formik';
+import { ComponentProps, FC } from 'react';
+import { Form, Formik, useField } from 'formik';
 import * as yup from 'yup';
 import {
   Box,
@@ -10,7 +10,6 @@ import {
   CircularProgress,
   capitalize,
 } from '@mui/material';
-import { InputType } from 'zlib';
 
 export type SignUpFormData = {
   name: string;
