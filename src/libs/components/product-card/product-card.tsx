@@ -54,7 +54,7 @@ const ProductCard: React.FC<Properties> = memo(
               have: Currency.UAH,
               want: chosenCurrency,
               amount: productWithCategory.price,
-            })}
+            })} {chosenCurrency}
           </p>
         </NavLink>
       </Card>
